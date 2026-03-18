@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: 240 20% 20%;
+  --color-accent: 225 73% 57%;
+  --color-surface: 210 20% 98%;
+  --color-text: 215.4 16.3% 46.9%;
+  --color-muted: 210 14.3% 56.9%;
+  --font-sans: 'lato';
+  --font-serif: 'merriweather';
+}
+
+html, body {
+  height: 100%;
+  background-color: transparent;
+}
