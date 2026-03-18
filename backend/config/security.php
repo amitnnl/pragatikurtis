@@ -17,13 +17,13 @@ class Security {
 }
 
 // Assign values after class definition
-Security::$JWT_SECRET_KEY = $_ENV['JWT_SECRET_KEY'] ?? null;
+Security::$JWT_SECRET_KEY = $_ENV['JWT_SECRET_KEY'] ?? $_SERVER['JWT_SECRET_KEY'] ?? getenv('JWT_SECRET_KEY') ?? null;
 if (empty(Security::$JWT_SECRET_KEY)) { // Check for empty or null
     die(json_encode([
         "status" => "error",
         "message" => "FATAL_ERROR: JWT_SECRET_KEY is not set in the environment. Application cannot start."
     ]));
 }
-Security::$RAZORPAY_KEY_ID = $_ENV['RAZORPAY_KEY_ID'] ?? null;
-Security::$RAZORPAY_KEY_SECRET = $_ENV['RAZORPAY_KEY_SECRET'] ?? null;
+Security::$RAZORPAY_KEY_ID = $_ENV['RAZORPAY_KEY_ID'] ?? $_SERVER['RAZORPAY_KEY_ID'] ?? getenv('RAZORPAY_KEY_ID') ?? null;
+Security::$RAZORPAY_KEY_SECRET = $_ENV['RAZORPAY_KEY_SECRET'] ?? $_SERVER['RAZORPAY_KEY_SECRET'] ?? getenv('RAZORPAY_KEY_SECRET') ?? null;
 ?>

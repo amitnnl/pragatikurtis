@@ -16,10 +16,10 @@ class Database {
     public $conn;
 
     public function __construct() {
-        $this->host = $_ENV['DB_HOST'] ?? null;
-        $this->db_name = $_ENV['DB_NAME'] ?? null;
-        $this->username = $_ENV['DB_USER'] ?? null;
-        $this->password = $_ENV['DB_PASS'] ?? null;
+        $this->host = $_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? getenv('DB_HOST') ?? null;
+        $this->db_name = $_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? getenv('DB_NAME') ?? null;
+        $this->username = $_ENV['DB_USER'] ?? $_SERVER['DB_USER'] ?? getenv('DB_USER') ?? null;
+        $this->password = $_ENV['DB_PASS'] ?? $_SERVER['DB_PASS'] ?? getenv('DB_PASS') ?? null;
 
 
 
