@@ -2,6 +2,6 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/hotelsunplaza/pragatikurtis.com/
-    - /bin/cp -R backend $DEPLOYPATH/
-    - /bin/cp -R frontend/dist/* $DEPLOYPATH/
-    - /bin/cp frontend/dist/.htaccess $DEPLOYPATH/
+    - /bin/cp -Rf backend $DEPLOYPATH/
+    - /bin/cp -Rf frontend/dist/* $DEPLOYPATH/
+    - /bin/cp -f frontend/dist/.htaccess $DEPLOYPATH/
