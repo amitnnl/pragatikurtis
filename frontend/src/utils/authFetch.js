@@ -22,12 +22,13 @@ const authFetch = async (endpoint, options = {}) => {
 
   // Handle unauthorized responses globally
   if (response.status === 401 || response.status === 403) {
-    const hadToken = !!token;
     localStorage.removeItem('jwt');
     localStorage.removeItem('user');
-    // Only redirect if user was logged in (session expired), not for anonymous requests
-    if (hadToken) {
-      window.location.href = '/login';
+    
+    // Redirect to login and save the current path to return to after login
+    const currentPath = window.location.pathname + window.location.search;
+    if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+      window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`;
     }
   }
 

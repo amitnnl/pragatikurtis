@@ -28,7 +28,11 @@ export default function Login({ setUser }) {
         localStorage.setItem('user', JSON.stringify(data.user));
         localStorage.setItem('jwt', data.jwt);
         setUser(data.user);
-        navigate('/');
+        
+        // Handle redirect if found in URL params
+        const params = new URLSearchParams(window.location.search);
+        const redirectTo = params.get('redirect') || '/';
+        navigate(redirectTo);
       } else {
         setMessage(data.message);
       }

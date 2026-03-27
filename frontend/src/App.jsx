@@ -239,17 +239,37 @@ export default function App() {
 
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('user')
-    if (savedUser) setUser(JSON.parse(savedUser))
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) setUser(JSON.parse(savedUser));
 
-    const savedCart = localStorage.getItem('cart')
-    if (savedCart) setCart(JSON.parse(savedCart))
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) setCart(JSON.parse(savedCart));
 
-    const savedWishlist = localStorage.getItem('wishlist')
-    if (savedWishlist) setWishlist(JSON.parse(savedWishlist))
+    const savedWishlist = localStorage.getItem('wishlist');
+    if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
 
-    fetchProducts()
-  }, [])
+    fetchProducts();
+  }, []);
+
+  // Resume pending action after login
+  useEffect(() => {
+    if (user) {
+      const pendingAction = sessionStorage.getItem('pendingAction');
+      if (pendingAction) {
+        try {
+          const { type, payload } = JSON.parse(pendingAction);
+          if (type === 'ADD_TO_CART') {
+            addToCart(payload);
+          } else if (type === 'TOGGLE_WISHLIST') {
+            onToggleWishlist(payload);
+          }
+          sessionStorage.removeItem('pendingAction');
+        } catch (e) {
+          console.error("Failed to execute pending action:", e);
+        }
+      }
+    }
+  }, [user]);
 
 
 
@@ -262,6 +282,11 @@ export default function App() {
   }, [wishlist])
 
   const onToggleWishlist = (product) => {
+    if (!user) {
+      sessionStorage.setItem('pendingAction', JSON.stringify({ type: 'TOGGLE_WISHLIST', payload: product }));
+      window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+      return;
+    }
     setWishlist(prev => {
       const isExist = prev.find(item => item.id === product.id)
       if (isExist) return prev.filter(item => item.id !== product.id)
@@ -270,13 +295,20 @@ export default function App() {
   }
 
   const addToCart = (product) => {
+    if (!user) {
+      sessionStorage.setItem('pendingAction', JSON.stringify({ type: 'ADD_TO_CART', payload: product }));
+      window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+      return;
+    }
+
     const { selectedSize, selectedColor, selectedFabric } = product;
     // Determine price based on user role and approval status
     const isApprovedDealer = user?.role === 'dealer' && user?.is_approved == 1;
     const priceToUse = (isApprovedDealer && product.dealer_price) ? parseFloat(product.dealer_price) : parseFloat(product.price);
 
     // Create a unique ID for the cart item based on product and variants
-    const cartItemId = `${product.id}-${selectedSize}-${selectedColor}-${selectedFabric}`;
+    const cartItemId = `${product.id}-${selectedSize || 'none'}-${selectedColor || 'none'}-${selectedFabric || 'none'}`;
+
 
     setCart(prev => {
       const existingItem = prev.find(item => item.cartItemId === cartItemId);

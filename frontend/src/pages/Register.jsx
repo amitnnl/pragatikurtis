@@ -32,8 +32,15 @@ export default function Register({ setUser }) {
       const data = await res.json();
       if (data.status === 'success') {
         localStorage.setItem('user', JSON.stringify(data.user));
+        if (data.jwt) {
+          localStorage.setItem('jwt', data.jwt);
+        }
         setUser(data.user);
-        navigate('/');
+        
+        // Handle redirect if found in URL params
+        const params = new URLSearchParams(window.location.search);
+        const redirectTo = params.get('redirect') || '/';
+        navigate(redirectTo);
       } else {
         setError(data.message);
       }
