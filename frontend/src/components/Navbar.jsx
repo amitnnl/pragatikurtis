@@ -47,7 +47,7 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
     <>
       <header className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ${
         scrolled
-          ? 'bg-primary/95 backdrop-blur-xl shadow-xl shadow-black/20 py-4'
+          ? 'bg-white/95 backdrop-blur-xl shadow-xl shadow-black/5 py-4'
           : 'bg-transparent py-6'
       }`}>
         <div className="container mx-auto px-6 flex justify-between items-center">
@@ -55,10 +55,10 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
           {/* Left — Mobile Menu + Logo */}
           <div className="flex items-center gap-4">
             <button onClick={() => setMobileMenuOpen(true)}
-              className="md:hidden w-9 h-9 flex items-center justify-center rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-all">
+              className={`md:hidden w-9 h-9 flex items-center justify-center rounded-full transition-all ${scrolled ? 'text-text-700 hover:bg-black/5' : 'text-white/70 hover:text-white hover:bg-white/10'}`}>
               <Menu size={20} />
             </button>
-            <Link to="/" className="font-serif text-2xl font-bold text-accent tracking-widest hover:text-white transition-all">
+            <Link to="/" className={`font-serif text-2xl font-bold tracking-widest transition-all ${scrolled ? 'text-text-700 hover:text-accent' : 'text-accent hover:text-white'}`}>
               {settings?.site_short_name || BRAND_CONFIG.shortName}
             </Link>
           </div>
@@ -68,7 +68,9 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
             {navLinks.map(link => (
               <Link key={link.name} to={link.path}
                 className={`text-[13px] font-bold uppercase tracking-[0.15em] transition-all duration-300 relative group ${
-                  isActive(link.path) ? 'text-accent' : 'text-white/80 hover:text-accent'
+                  isActive(link.path) 
+                    ? 'text-accent' 
+                    : (scrolled ? 'text-text-700 hover:text-accent' : 'text-white/80 hover:text-accent')
                 }`}
               >
                 {link.name}
@@ -76,20 +78,24 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
               </Link>
             ))}
             {user?.role === 'admin' && (
-              <Link to="/admin" className="text-[10px] font-bold text-accent uppercase tracking-widest px-4 py-2 rounded-full border border-accent/20 hover:bg-accent hover:text-white hover:border-accent transition-all">
+              <Link to="/admin" className={`text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-full border transition-all ${
+                scrolled 
+                  ? 'text-text-700 border-text-700/20 hover:bg-text-700 hover:text-white hover:border-text-700' 
+                  : 'text-accent border-accent/20 hover:bg-accent hover:text-white hover:border-accent'
+              }`}>
                 Admin Area
               </Link>
             )}
           </nav>
 
           {/* Right — Actions */}
-          <div className="flex items-center gap-3 text-white">
+          <div className={`flex items-center gap-3 ${scrolled ? 'text-text-700' : 'text-white'}`}>
             <button onClick={() => setShowSearch(true)}
-              className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-all">
+              className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 transition-all">
               <Search size={18} />
             </button>
 
-            <Link to="/wishlist" className="relative w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-all">
+            <Link to="/wishlist" className="relative w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 transition-all">
               <Heart size={18} />
               {wishlistCount > 0 && (
                 <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full" />
@@ -97,17 +103,17 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
             </Link>
 
             {user ? (
-              <Link to="/profile" className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-all">
+              <Link to="/profile" className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 transition-all">
                 <User size={18} />
               </Link>
             ) : (
-              <Link to="/login" className="hidden sm:block text-sm font-medium text-white/70 hover:text-white transition-colors">
+              <Link to="/login" className="hidden sm:block text-sm font-medium opacity-70 hover:opacity-100 transition-opacity">
                 Sign In
               </Link>
             )}
 
             <button onClick={onCartOpen}
-              className="relative w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-all">
+              className="relative w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 transition-all">
               <ShoppingBag size={18} />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white shadow-lg">
