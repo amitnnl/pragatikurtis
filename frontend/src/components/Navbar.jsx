@@ -58,26 +58,26 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
               className="md:hidden w-9 h-9 flex items-center justify-center rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-all">
               <Menu size={20} />
             </button>
-            <Link to="/" className="font-serif text-2xl font-medium text-white tracking-wide hover:text-accent transition-colors">
+            <Link to="/" className="font-serif text-2xl font-bold text-accent tracking-widest hover:text-white transition-all">
               {settings?.site_short_name || BRAND_CONFIG.shortName}
             </Link>
           </div>
 
           {/* Center — Nav Links */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-10">
             {navLinks.map(link => (
               <Link key={link.name} to={link.path}
-                className={`text-sm font-medium transition-all duration-200 relative group ${
-                  isActive(link.path) ? 'text-accent' : 'text-white/75 hover:text-white'
+                className={`text-[13px] font-bold uppercase tracking-[0.15em] transition-all duration-300 relative group ${
+                  isActive(link.path) ? 'text-accent' : 'text-white/80 hover:text-accent'
                 }`}
               >
                 {link.name}
-                <span className={`absolute -bottom-0.5 left-0 h-px bg-accent transition-all duration-300 ${isActive(link.path) ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+                <span className={`absolute -bottom-1 left-0 h-0.5 bg-accent transition-all duration-300 ${isActive(link.path) ? 'w-full' : 'w-0 group-hover:w-full'}`} />
               </Link>
             ))}
             {user?.role === 'admin' && (
-              <Link to="/admin" className="text-xs font-bold text-accent/80 hover:text-accent transition-colors px-3 py-1.5 rounded-full border border-accent/30 hover:border-accent">
-                Admin Panel
+              <Link to="/admin" className="text-[10px] font-bold text-accent uppercase tracking-widest px-4 py-2 rounded-full border border-accent/20 hover:bg-accent hover:text-white hover:border-accent transition-all">
+                Admin Area
               </Link>
             )}
           </nav>
