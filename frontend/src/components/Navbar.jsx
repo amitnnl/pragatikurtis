@@ -91,11 +91,11 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
           {/* Right — Actions */}
           <div className={`flex items-center gap-3 ${scrolled ? 'text-text-700' : 'text-white'}`}>
             <button onClick={() => setShowSearch(true)}
-              className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 transition-all">
+              className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 hover:text-accent transition-all">
               <Search size={18} />
             </button>
 
-            <Link to="/wishlist" className="relative w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 transition-all">
+            <Link to="/wishlist" className="relative w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 hover:text-accent transition-all">
               <Heart size={18} />
               {wishlistCount > 0 && (
                 <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full" />
@@ -103,17 +103,17 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
             </Link>
 
             {user ? (
-              <Link to="/profile" className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 transition-all">
+              <Link to="/profile" className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 hover:text-accent transition-all">
                 <User size={18} />
               </Link>
             ) : (
-              <Link to="/login" className="hidden sm:block text-sm font-medium opacity-70 hover:opacity-100 transition-opacity">
+              <Link to="/login" className="hidden sm:block text-sm font-medium opacity-70 hover:opacity-100 hover:text-accent transition-all">
                 Sign In
               </Link>
             )}
 
             <button onClick={onCartOpen}
-              className="relative w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 transition-all">
+              className="relative w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 hover:text-accent transition-all">
               <ShoppingBag size={18} />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white shadow-lg">

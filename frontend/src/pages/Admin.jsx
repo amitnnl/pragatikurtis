@@ -832,7 +832,7 @@ export default function Admin({ products, refreshProducts }) {
         className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 group relative ${
           isActive
             ? 'bg-accent/15 text-accent'
-            : 'text-white/50 hover:text-white hover:bg-white/8'
+            : 'text-white/50 hover:text-accent hover:bg-white/8'
         }`}
       >
         {isActive && (
