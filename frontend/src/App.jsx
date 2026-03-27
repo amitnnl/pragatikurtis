@@ -19,7 +19,7 @@ const Checkout = lazy(() => import('./pages/Checkout'))
 const Profile = lazy(() => import('./pages/Profile'))
 const Admin = lazy(() => import('./pages/Admin'))
 const About = lazy(() => import('./pages/About'))
-import Contact from './pages/Contact.jsx';
+const Contact = lazy(() => import('./pages/Contact'))
 // const InfoPage = lazy(() => import('./pages/InfoPage.jsx'))
 const Shop = lazy(() => import('./pages/Shop'))
 const Wishlist = lazy(() => import('./pages/Wishlist'))
@@ -41,13 +41,8 @@ function AppContent({
   const location = useLocation();
   const { showToast } = useToast()
   const [footerEmail, setFooterEmail] = useState('');
-  const { settings, loading, error } = useSettings(); // Use the settings hook
-
-  // Handle loading and error states for settings
-  if (loading) return <div>Loading settings...</div>;
-  if (error) return <div>Error loading settings: {error.message}</div>;
-  if (!settings) return null; // Or some fallback UI
-  
+  const { settings } = useSettings();
+  // Don't block app render while settings load — let pages handle their own loading states
   const isPanelPage = location.pathname.startsWith('/admin') || location.pathname.startsWith('/profile');
 
   const handleFooterSubscribe = async (e) => {
@@ -84,7 +79,7 @@ function AppContent({
   const PageRoutes = (
       <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home products={products} categories={categories} onAddToCart={handleAddToCart} onToggleWishlist={handleToggleWishlist} wishlist={wishlist} />} />
-          <Route path="/shop" element={<Shop onAddToCart={handleAddToCart} onToggleWishlist={handleToggleWishlist} wishlist={wishlist} />} />
+          <Route path="/shop" element={<Shop onAddToCart={handleAddToCart} onToggleWishlist={handleToggleWishlist} wishlist={wishlist} user={user} />} />
           <Route path="/product/:id" element={<ProductDetails products={products} onAddToCart={handleAddToCart} onToggleWishlist={handleToggleWishlist} wishlist={wishlist} user={user} />} />
           <Route path="/login" element={<Login setUser={setUser} />} />
           <Route path="/register" element={<Register setUser={setUser} />} />
@@ -137,62 +132,78 @@ function AppContent({
         )}
       </AnimatePresence>
 
-      <div className={!isPanelPage ? "pt-16" : ""}>
+      <div>
         {PageRoutes}
       </div>
 
       {!isPanelPage && (
-        <footer className="bg-primary text-white pt-16 pb-8">
-          <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
-            
-            <div className="space-y-4">
-              <h3 className="text-xl font-serif font-bold">{settings.site_short_name || BRAND_CONFIG.shortName}</h3>
-              <p className="text-sm text-white/70">{settings.site_description || BRAND_CONFIG.tagline}</p>
+        <footer className="bg-primary text-white">
+          {/* Main Footer */}
+          <div className="container mx-auto px-6 pt-20 pb-12">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-white/10">
+              {/* Brand */}
+              <div className="md:col-span-4 space-y-5">
+                <h3 className="font-serif text-2xl font-light">{settings?.site_short_name || BRAND_CONFIG.shortName}</h3>
+                <p className="text-white/40 text-sm leading-relaxed font-light max-w-xs">
+                  {settings?.site_description || BRAND_CONFIG.tagline}
+                </p>
+                <div className="flex gap-3 pt-2">
+                  {[['F', BRAND_CONFIG.social.facebook], ['I', BRAND_CONFIG.social.instagram], ['Y', BRAND_CONFIG.social.youtube]].map(([l, href]) => (
+                    <a key={l} href={href} target="_blank" rel="noreferrer"
+                      className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-white/50 hover:bg-accent hover:border-accent hover:text-white text-xs font-bold transition-all">
+                      {l}
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              {/* Shop Links */}
+              <div className="md:col-span-2">
+                <p className="text-xs font-bold tracking-[0.18em] uppercase text-accent mb-5">Shop</p>
+                <ul className="space-y-3 text-sm">
+                  {[['All Products', '/shop'], ['Kurtis', '/shop?category=Kurti'], ['Suit Sets', '/shop?category=Suit Set'], ['Gowns', '/shop?category=Gown/Dresses']].map(([name, path]) => (
+                    <li key={name}><Link to={path} className="text-white/40 hover:text-white transition-colors font-light">{name}</Link></li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Company Links */}
+              <div className="md:col-span-2">
+                <p className="text-xs font-bold tracking-[0.18em] uppercase text-accent mb-5">Company</p>
+                <ul className="space-y-3 text-sm">
+                  {[['About Us', '/about'], ['Contact', '/contact'], ['My Account', '/profile'], ['Track Order', '/track-order']].map(([name, path]) => (
+                    <li key={name}><Link to={path} className="text-white/40 hover:text-white transition-colors font-light">{name}</Link></li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Newsletter */}
+              <div className="md:col-span-4">
+                <p className="text-xs font-bold tracking-[0.18em] uppercase text-accent mb-5">Newsletter</p>
+                <p className="text-white/40 text-sm mb-4 font-light">Subscribe for exclusive deals and new arrivals.</p>
+                <form onSubmit={handleFooterSubscribe} className="flex gap-2">
+                  <input
+                    type="email" placeholder="Your email address"
+                    className="flex-1 bg-white/8 border border-white/10 px-4 py-2.5 text-sm text-white placeholder:text-white/30 rounded-xl focus:outline-none focus:border-accent/50 transition-colors"
+                    value={footerEmail}
+                    onChange={e => setFooterEmail(e.target.value)}
+                    required
+                  />
+                  <button type="submit" className="bg-accent text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-opacity-90 transition-all whitespace-nowrap">
+                    Subscribe
+                  </button>
+                </form>
+              </div>
             </div>
 
-            <div>
-              <h5 className="font-bold mb-4 text-accent">Shop</h5>
-              <ul className="space-y-2 text-sm text-white/70">
-                <li><Link to="/shop" className="hover:text-accent">All Products</Link></li>
-                <li><Link to="/shop?category=Kurti" className="hover:text-accent">Kurtis</Link></li>
-                <li><Link to="/shop?category=Suit Set" className="hover:text-accent">Suit Sets</Link></li>
-                <li><Link to="/shop?category=Gown/Dresses" className="hover:text-accent">Dresses</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h5 className="font-bold mb-4 text-accent">Company</h5>
-              <ul className="space-y-2 text-sm text-white/70">
-                  <li><Link to="/about" className="hover:text-accent">About Us</Link></li>
-                  <li><Link to="/contact" className="hover:text-accent">Contact</Link></li>
-                  <li><Link to="/profile" className="hover:text-accent">My Account</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h5 className="font-bold mb-4 text-accent">Newsletter</h5>
-              <p className="text-sm text-white/70 mb-4">Subscribe for updates and exclusive deals.</p>
-              <form onSubmit={handleFooterSubscribe} className="flex">
-                <input 
-                  type="email" 
-                  placeholder="Enter your email" 
-                  className="w-full bg-white/10 px-4 py-2 text-sm text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-accent rounded-l-lg" 
-                  value={footerEmail}
-                  onChange={(e) => setFooterEmail(e.target.value)}
-                  required
-                />
-                <button type="submit" className="bg-accent text-white px-4 py-2 rounded-r-lg text-sm font-bold">
-                  Subscribe
-                </button>
-              </form>
-            </div>
-          </div>
-
-          <div className="container mx-auto px-6 mt-12 pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/50">
-            <p>© {new Date().getFullYear()} {settings.site_name || BRAND_CONFIG.name}. All Rights Reserved.</p>
-            <div className="flex gap-4">
-              <Link to="/privacy" className="hover:text-white">Privacy Policy</Link>
-              <Link to="/terms" className="hover:text-white">Terms of Service</Link>
+            {/* Bottom Bar */}
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8 text-[13px] text-white/30">
+              <p>© {new Date().getFullYear()} {settings?.site_name || BRAND_CONFIG.name}. All rights reserved.</p>
+              <div className="flex gap-6">
+                <Link to="/privacy" className="hover:text-white/70 transition-colors">Privacy Policy</Link>
+                <Link to="/terms" className="hover:text-white/70 transition-colors">Terms of Service</Link>
+                <Link to="/sitemap" className="hover:text-white/70 transition-colors">Sitemap</Link>
+              </div>
             </div>
           </div>
         </footer>

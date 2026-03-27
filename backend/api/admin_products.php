@@ -375,8 +375,23 @@ try {
 
     
 
-            ob_clean();
+            // --- AUTO POST TO SOCIAL MEDIA ON NEW PRODUCT ---
+            if (!$id) { // Only on fresh product creation
+                include_once 'social_media_poster.php';
+                $product_link = "https://yourwebsite.com/product/" . $product_id;
+                
+                $post_message = "🆕 New Arrival: {$name}!\n\n" . 
+                                "✨ Fabric: {$fabric}\n" . 
+                                "🎨 Color: {$color}\n" . 
+                                "💸 Price: ₹{$price}\n\n" .
+                                "{$description}";
 
+                // Make sure your .env is setup or replace the place holders inside the class.
+                SocialMediaPoster::postToFacebook($post_message, $product_link, $image_url);
+                SocialMediaPoster::postToInstagram($image_url, $post_message . "\n\nLink in bio: " . $product_link);
+            }
+
+            ob_clean();
             echo json_encode(["status" => "success", "message" => "Product saved successfully"]);
 
     } else if ($method == 'DELETE') {

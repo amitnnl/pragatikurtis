@@ -102,7 +102,16 @@ function ProductForm({ onSave, onCancel, productToEdit, refreshProducts }) {
     try {
       const res = await authFetch(`/admin_products.php`, { method: 'POST', body: formData })
       const data = await res.json()
-      if (data.status === 'success') { onSave(); refreshProducts(); } else alert(data.message)
+      if (data.status === 'success') { 
+        onSave(); 
+        refreshProducts(); 
+        if (!product.id) {
+          if (window.confirm("Product added successfully! Do you want to share this on WhatsApp Status?")) {
+            const text = `🆕 New Arrival: ${product.name}!\n💸 Price: ₹${product.price}\n✨ Fabric: ${product.fabric}\n🎨 Color: ${product.color}\n\nCheck it out now!`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+          }
+        }
+      } else alert(data.message)
     } catch(err) { console.error(err); alert("Network error.") }
   }
 
@@ -780,9 +789,25 @@ export default function Admin({ products, refreshProducts }) {
       case 'dashboard': return <DashboardStats products={products} onEdit={handleEditProduct} />
       case 'products': return (
         <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-text">Products</h2>
-            <Button onClick={() => { setProductToEdit(null); setFormVisible(true); }}><Plus size={18} /> Add Product</Button>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <h2 className="text-2xl font-bold text-text-700">Products</h2>
+            <div className="flex gap-3">
+              <label className="cursor-pointer bg-surface-100 text-text-700 border border-surface-200 px-4 py-2 rounded-lg font-medium text-sm transition-all hover:bg-surface-200 hover:border-surface-300 flex items-center justify-center gap-2">
+                <Upload size={18} /> Bulk Import CSV
+                <input type="file" accept=".csv" className="hidden" onChange={async (e) => {
+                  const file = e.target.files[0];
+                  if (!file) return;
+                  const formData = new FormData();
+                  formData.append('csv_file', file);
+                  try {
+                    const res = await authFetch('/bulk_import_products.php', { method: 'POST', body: formData });
+                    const data = await res.json();
+                    if (data.status === 'success') { alert(data.message); refreshProducts(); } else { alert(data.message); }
+                  } catch(err) { alert('Network error importing CSV.'); }
+                }} />
+              </label>
+              <Button onClick={() => { setProductToEdit(null); setFormVisible(true); }}><Plus size={18} /> Add Product</Button>
+            </div>
           </div>
           <InventoryManager products={products} onEdit={handleEditProduct} onDelete={handleDeleteProduct} />
         </div>
@@ -799,15 +824,25 @@ export default function Admin({ products, refreshProducts }) {
     }
   }
 
-  const NavItem = ({ id, icon: Icon, label }) => (
-    <button 
-      onClick={() => { setActiveTab(id); setSidebarOpen(false); if(id !== 'products') setFormVisible(false); }}
-      className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${activeTab === id ? 'bg-accent text-surface shadow-lg shadow-accent-light' : 'text-muted/70 hover:text-surface hover:bg-primary-light'}`}
-    >
-      <Icon size={20} />
-      {label}
-    </button>
-  )
+  const NavItem = ({ id, icon: Icon, label }) => {
+    const isActive = activeTab === id;
+    return (
+      <button
+        onClick={() => { setActiveTab(id); setSidebarOpen(false); if(id !== 'products') setFormVisible(false); }}
+        className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 group relative ${
+          isActive
+            ? 'bg-accent/15 text-accent'
+            : 'text-white/50 hover:text-white hover:bg-white/8'
+        }`}
+      >
+        {isActive && (
+          <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-accent rounded-r-full" />
+        )}
+        <Icon size={18} className={isActive ? 'text-accent' : 'text-white/40 group-hover:text-white/80 transition-colors'} />
+        <span>{label}</span>
+      </button>
+    );
+  }
   
   const navItems = [
       { id: 'dashboard', icon: BarChart2, label: 'Dashboard' },
@@ -833,29 +868,42 @@ export default function Admin({ products, refreshProducts }) {
       <motion.aside 
         className={`fixed lg:relative z-50 w-64 h-full bg-primary flex flex-col transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
-        <div className="p-6 border-b border-surface-200/10 flex items-center justify-between">
-          <Link to="/" className="text-surface font-bold text-xl font-serif">{BRAND_CONFIG.shortName}</Link>
-          <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-muted/70"><X /></button>
+        {/* Brand Header */}
+        <div className="px-6 py-5 border-b border-white/8 flex items-center justify-between">
+          <Link to="/" className="font-serif text-xl font-light text-white tracking-wide hover:text-accent transition-colors">
+            {BRAND_CONFIG.shortName}
+          </Link>
+          <button onClick={() => setSidebarOpen(false)} className="lg:hidden w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white">
+            <X size={16} />
+          </button>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-            {navItems.map(item => <NavItem key={item.id} {...item} activeTab={activeTab} setActiveTab={setActiveTab} setSidebarOpen={setSidebarOpen} />)}
+        {/* Section Label */}
+        <div className="px-6 pt-5 pb-2">
+          <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/25">Management</p>
+        </div>
+
+        <nav className="flex-1 px-3 space-y-0.5 overflow-y-auto">
+          {navItems.map(item => <NavItem key={item.id} {...item} activeTab={activeTab} setActiveTab={setActiveTab} setSidebarOpen={setSidebarOpen} />)}
         </nav>
 
-        <div className="p-4 border-t border-surface-200/10">
-           <Link to="/" className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-muted/70 hover:text-surface rounded-lg">
-             <LogOut size={20} /> Back to Store
-           </Link>
+        <div className="p-4 border-t border-white/8">
+          <Link to="/" className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-white/35 hover:text-white hover:bg-white/8 rounded-xl transition-all">
+            <LogOut size={16} /> Back to Store
+          </Link>
         </div>
       </motion.aside>
 
       <div className="flex-1 flex flex-col h-screen overflow-y-auto">
-        <header className="h-16 bg-surface-100 border-b border-surface-200 flex items-center justify-between px-6 shrink-0">
+        <header className="h-16 bg-surface border-b border-surface-200 flex items-center justify-between px-6 shrink-0 shadow-sm">
           <div className="flex items-center gap-4">
-            <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 text-text-700"><Menu /></button>
-            <h2 className="text-lg font-semibold text-text-700 capitalize">{activeTab.replace('_', ' ')}</h2>
+            <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 text-text-700 hover:bg-surface-100 rounded-lg"><Menu size={20} /></button>
+            <h2 className="text-base font-semibold text-text-700 capitalize tracking-wide">{activeTab.replace('_', ' ')}</h2>
           </div>
-          <div className="w-8 h-8 rounded-full bg-accent text-surface flex items-center justify-center font-bold text-sm">A</div>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-muted/50 hidden sm:block">Admin Panel</span>
+            <div className="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center font-bold text-sm shadow-md">A</div>
+          </div>
         </header>
 
         <main className="flex-1 p-6 bg-surface">

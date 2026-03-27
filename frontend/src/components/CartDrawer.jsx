@@ -1,9 +1,11 @@
-import { ShoppingBag, X, Plus, Minus, Trash2 } from 'lucide-react';
+import { ShoppingBag, X, Plus, Minus, Trash2, ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CartDrawer({ isOpen, onClose, cart, updateQuantity, removeFromCart, cartTotal }) {
   const navigate = useNavigate();
+  const shippingAmount = cartTotal >= 999 ? 100 : 150;
+  const orderTotal = cartTotal + shippingAmount;
 
   const handleCheckout = () => {
     onClose();
@@ -12,73 +14,113 @@ export default function CartDrawer({ isOpen, onClose, cart, updateQuantity, remo
 
   return (
     <div className={`fixed inset-0 z-[100] flex justify-end ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}>
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isOpen ? 1 : 0 }}
-        className="absolute inset-0 bg-primary/50 backdrop-blur-sm" 
+      {/* Backdrop */}
+      <motion.div
+        initial={{ opacity: 0 }} animate={{ opacity: isOpen ? 1 : 0 }}
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
       />
-      <motion.div 
+
+      {/* Drawer */}
+      <motion.div
         initial={{ x: '100%' }}
         animate={{ x: isOpen ? '0%' : '100%' }}
-        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="relative w-full max-w-sm bg-surface-100 h-full shadow-2xl flex flex-col"
+        transition={{ type: 'spring', damping: 28, stiffness: 240 }}
+        className="relative w-full max-w-sm bg-surface h-full shadow-2xl flex flex-col"
       >
-        <div className="p-6 border-b border-surface-200 flex justify-between items-center">
-          <h2 className="text-lg font-semibold text-text-700">Your Bag</h2>
-          <button onClick={onClose} className="text-text-500 hover:text-text-700 transition-colors"><X size={24} /></button>
+        {/* Header */}
+        <div className="px-6 py-5 border-b border-surface-200 flex justify-between items-center bg-surface">
+          <div className="flex items-center gap-3">
+            <ShoppingCart size={20} className="text-accent" />
+            <h2 className="text-lg font-serif font-medium text-text-700">Your Bag</h2>
+            {cart.length > 0 && (
+              <span className="w-5 h-5 rounded-full bg-accent text-white text-[10px] font-bold flex items-center justify-center">
+                {cart.length}
+              </span>
+            )}
+          </div>
+          <button onClick={onClose}
+            className="w-9 h-9 rounded-full bg-surface-100 hover:bg-primary hover:text-white flex items-center justify-center text-text-500 transition-all">
+            <X size={18} />
+          </button>
         </div>
-        
+
+        {/* Items */}
         {cart.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
-            <ShoppingBag className="w-16 h-16 text-text-500/20 mb-4" />
-            <p className="font-semibold text-text-700">Your bag is empty.</p>
-            <p className="text-sm text-text-500 mt-1">Add some items to get started.</p>
-            <button onClick={onClose} className="mt-6 bg-accent text-white px-6 py-3 rounded-lg text-sm font-bold">Continue Shopping</button>
+          <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
+            <div className="w-20 h-20 rounded-full bg-surface-100 flex items-center justify-center mb-5">
+              <ShoppingBag className="w-9 h-9 text-muted/30" />
+            </div>
+            <h3 className="font-serif text-xl text-text-700">Your bag is empty</h3>
+            <p className="text-sm text-muted/60 mt-2 mb-6 font-light">Add some beautiful pieces to get started.</p>
+            <button onClick={onClose} className="btn-primary text-sm px-6 py-3">
+              Continue Shopping
+            </button>
           </div>
         ) : (
           <>
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
-              {cart.map(item => (
-                <motion.div 
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  key={item.cartItemId} 
-                  className="flex gap-4"
-                >
-                  <img src={item.image} alt={item.name} className="w-20 h-24 object-cover rounded-md bg-text-500/10" />
-                  <div className="flex-1 flex flex-col">
-                    <div className="flex justify-between items-start">
-                      <h3 className="font-semibold text-text-700 text-sm pr-2">{item.name}</h3>
-                      <button onClick={() => removeFromCart(item.cartItemId)} className="text-text-500/50 hover:text-text-700 transition-colors"><Trash2 size={16} /></button>
+            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+              <AnimatePresence mode="popLayout">
+                {cart.map(item => (
+                  <motion.div
+                    layout
+                    key={item.cartItemId}
+                    initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20, height: 0 }}
+                    className="flex gap-4 bg-surface-100 p-3 rounded-2xl"
+                  >
+                    <div className="w-20 aspect-[3/4] rounded-xl overflow-hidden bg-surface-200 shrink-0">
+                      <img src={item.image} alt={item.name} className="w-full h-full object-cover object-top" />
                     </div>
-                    {item.selectedSize && <p className="text-xs text-text-500 mt-1">Size: {item.selectedSize}</p>}
-                    
-                    <div className="flex justify-between items-center mt-auto">
-                      <div className="flex items-center border border-surface-200 rounded-md">
-                        <button onClick={() => updateQuantity(item.cartItemId, -1)} disabled={item.quantity <= 1} className="p-2 disabled:opacity-30 text-text-700"><Minus size={14} /></button>
-                        <span className="text-sm font-semibold w-6 text-center text-text-700">{item.quantity}</span>
-                        <button onClick={() => updateQuantity(item.cartItemId, 1)} className="p-2 text-text-700"><Plus size={14} /></button>
+                    <div className="flex-1 flex flex-col min-w-0 py-1">
+                      <div className="flex justify-between items-start gap-2">
+                        <h3 className="font-serif text-sm text-text-700 leading-snug line-clamp-2">{item.name}</h3>
+                        <button onClick={() => removeFromCart(item.cartItemId)}
+                          className="text-muted/40 hover:text-red-400 transition-colors shrink-0 mt-0.5">
+                          <Trash2 size={14} />
+                        </button>
                       </div>
-                      <span className="font-semibold text-text-700">₹{item.price * item.quantity}</span>
+                      {item.selectedSize && (
+                        <p className="text-xs text-muted/60 mt-1">Size: {item.selectedSize}</p>
+                      )}
+                      <div className="flex justify-between items-center mt-auto pt-2">
+                        <div className="flex items-center gap-1 border border-surface-200 rounded-lg overflow-hidden bg-surface">
+                          <button onClick={() => updateQuantity(item.cartItemId, -1)} disabled={item.quantity <= 1}
+                            className="w-7 h-7 flex items-center justify-center text-text-700 hover:bg-muted/10 disabled:opacity-30 transition-all">
+                            <Minus size={12} />
+                          </button>
+                          <span className="text-sm font-semibold w-6 text-center text-text-700">{item.quantity}</span>
+                          <button onClick={() => updateQuantity(item.cartItemId, 1)}
+                            className="w-7 h-7 flex items-center justify-center text-text-700 hover:bg-muted/10 transition-all">
+                            <Plus size={12} />
+                          </button>
+                        </div>
+                        <span className="font-bold text-sm text-text-700">₹{(item.price * item.quantity).toFixed(2)}</span>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
 
-            <div className="p-6 border-t border-surface-200 bg-surface">
-              <div className="flex justify-between mb-2 text-sm">
-                <span className="text-text-500">Subtotal</span>
-                <span className="font-semibold text-text-700">₹{cartTotal}</span>
+            {/* Footer */}
+            <div className="px-5 py-5 bg-surface border-t border-surface-200 space-y-4">
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between text-muted/70">
+                  <span>Subtotal</span>
+                  <span className="font-semibold text-text-700">₹{cartTotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-muted/70">
+                  <span>Shipping</span>
+                  <span className="font-semibold text-text-700">₹{shippingAmount}</span>
+                </div>
+                <div className="flex justify-between font-bold text-base text-text-700 pt-2 border-t border-muted/10">
+                  <span>Total</span>
+                  <span>₹{orderTotal.toFixed(2)}</span>
+                </div>
               </div>
-              <p className="text-xs text-text-500/70 mb-4 text-right">Taxes & shipping calculated at checkout</p>
-              
-              <button 
-                onClick={handleCheckout}
-                className="w-full py-4 bg-accent text-white font-bold rounded-lg hover:bg-opacity-90 transition-all shadow-lg text-sm uppercase tracking-wider"
-              >
+              <p className="text-[11px] text-muted/50 text-center">Shipping calculated at checkout. (Including GST)</p>
+              <button onClick={handleCheckout}
+                className="w-full btn-primary justify-center text-sm py-4">
                 Proceed to Checkout
               </button>
             </div>
@@ -86,5 +128,5 @@ export default function CartDrawer({ isOpen, onClose, cart, updateQuantity, remo
         )}
       </motion.div>
     </div>
-  )
+  );
 }

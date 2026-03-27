@@ -11,7 +11,6 @@ const ProductDetails = ({ products, onAddToCart, onToggleWishlist, wishlist, use
   const { id } = useParams();
   const navigate = useNavigate();
   const product = products.find(p => p.id == id);
-  console.log('Product data:', product);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
@@ -154,34 +153,68 @@ const ProductDetails = ({ products, onAddToCart, onToggleWishlist, wishlist, use
 
   const averageRating = reviews.length > 0 ? (reviews.reduce((sum, r) => sum + parseInt(r.rating), 0) / reviews.length).toFixed(1) : 'N/A';
 
+  const productSchema = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": product.name,
+    "image": product.image_url || product.image,
+    "description": product.meta_description || product.description,
+    "sku": product.id,
+    "offers": {
+      "@type": "Offer",
+      "url": window.location.href,
+      "priceCurrency": "INR",
+      "price": product.price,
+      "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      "itemCondition": "https://schema.org/NewCondition"
+    }
+  };
+
+  if (reviews.length > 0) {
+    productSchema.aggregateRating = {
+      "@type": "AggregateRating",
+      "ratingValue": averageRating,
+      "reviewCount": reviews.length
+    };
+  }
+
   return (
     <div className="bg-surface">
-      <SEO title={product.name} description={product.meta_description || product.description} />
+      <SEO 
+        title={product.name} 
+        description={product.meta_description || product.description} 
+        image={product.image_url || product.image}
+        url={window.location.href}
+        schema={productSchema}
+      />
       
-      <div className="container mx-auto px-6 py-12 md:py-20">
+      <div className="container mx-auto px-6 pt-28 md:pt-36 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
           {/* Product Images */}
           <div>
-            <AnimatePresence mode="wait">
-              <motion.img
-                key={mainDisplayImage}
-                src={mainDisplayImage}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-                alt={product.name}
-                className="w-full h-[600px] object-cover rounded-xl shadow-lg border border-surface-200"
-              />
-            </AnimatePresence>
-            <div className="flex gap-2 mt-4 overflow-x-auto">
-              {product.gallery.map((img, index) => (
-                <img
-                  key={index}
-                  src={img}
-                  alt={`${product.name} gallery ${index + 1}`}
-                  className="w-20 h-20 object-cover rounded-md cursor-pointer border border-surface-200 hover:border-accent transition"
+            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl shadow-lg border border-surface-200 bg-surface-100">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={mainDisplayImage}
+                  src={mainDisplayImage}
+                  initial={{ opacity: 0, scale: 1.03 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.97 }}
+                  transition={{ duration: 0.35 }}
+                  alt={product.name}
+                  className="absolute inset-0 w-full h-full object-cover object-top"
                 />
+              </AnimatePresence>
+            </div>
+            <div className="flex gap-2 mt-4 overflow-x-auto pb-1">
+              {product.gallery.map((img, index) => (
+                <div key={index} className="relative flex-shrink-0 w-20 aspect-[3/4] overflow-hidden rounded-md border border-surface-200 hover:border-accent transition cursor-pointer">
+                  <img
+                    src={img}
+                    alt={`${product.name} gallery ${index + 1}`}
+                    className="absolute inset-0 w-full h-full object-cover object-top"
+                  />
+                </div>
               ))}
             </div>
           </div>

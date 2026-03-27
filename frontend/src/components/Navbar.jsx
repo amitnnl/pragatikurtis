@@ -1,99 +1,116 @@
-import { ShoppingBag, Search, Menu, User, LogOut, X, Heart } from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom'
+import { ShoppingBag, Search, Menu, User, X, Heart } from 'lucide-react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BRAND_CONFIG } from '../config/branding'
-import { useSettings } from '../context/SettingsContext' // Import useSettings
+import { useSettings } from '../context/SettingsContext'
 
 export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, setUser, products }) {
   const navigate = useNavigate()
+  const location = useLocation()
   const [showSearch, setShowSearch] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const { settings } = useSettings(); // Get settings from context
+  const { settings } = useSettings()
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20)
+    const handleScroll = () => setScrolled(window.scrollY > 30)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Close mobile menu on route change
+  useEffect(() => { setMobileMenuOpen(false); }, [location.pathname])
+
   const handleLogout = () => {
     localStorage.removeItem('user')
+    localStorage.removeItem('jwt')
     setUser(null)
     navigate('/')
   }
 
-  const searchResults = searchQuery.length > 1 
-    ? products.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.category.toLowerCase().includes(searchQuery.toLowerCase()))
+  const searchResults = searchQuery.length > 1
+    ? products.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.category.toLowerCase().includes(searchQuery.toLowerCase())).slice(0, 8)
     : []
+
+  const navLinks = [
+    { name: 'Home', path: '/' },
+    { name: 'Shop', path: '/shop' },
+    { name: 'About', path: '/about' },
+    { name: 'Contact', path: '/contact' },
+  ]
+
+  const isActive = (path) => location.pathname === path
 
   return (
     <>
-      <header className={`fixed top-0 inset-x-0 z-[100] transition-all duration-300 border-b ${scrolled ? 'bg-primary/80 backdrop-blur-lg border-primary/10 shadow-sm py-4' : 'bg-primary border-primary py-4'}`}>
+      <header className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ${
+        scrolled
+          ? 'bg-primary/95 backdrop-blur-xl shadow-xl shadow-black/20 py-4'
+          : 'bg-transparent py-6'
+      }`}>
         <div className="container mx-auto px-6 flex justify-between items-center">
-          
+
+          {/* Left — Mobile Menu + Logo */}
           <div className="flex items-center gap-4">
-            <button onClick={() => setMobileMenuOpen(true)} className="md:hidden text-white hover:text-accent transition-colors">
-              <Menu size={24} />
+            <button onClick={() => setMobileMenuOpen(true)}
+              className="md:hidden w-9 h-9 flex items-center justify-center rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-all">
+              <Menu size={20} />
             </button>
-            <Link to="/" className="text-2xl font-serif font-bold text-white hover:text-accent transition-colors">
-              {settings.site_short_name}
+            <Link to="/" className="font-serif text-2xl font-medium text-white tracking-wide hover:text-accent transition-colors">
+              {settings?.site_short_name || BRAND_CONFIG.shortName}
             </Link>
           </div>
 
+          {/* Center — Nav Links */}
           <nav className="hidden md:flex items-center gap-8">
-            {[
-              { name: 'Home', path: '/' },
-              { name: 'Shop', path: '/shop' },
-              { name: 'About', path: '/about' },
-              { name: 'Contact', path: '/contact' },
-            ].map((link) => (
-              <Link 
-                key={link.name}
-                to={link.path} 
-                className="text-sm font-medium text-white hover:text-accent transition-colors relative group"
+            {navLinks.map(link => (
+              <Link key={link.name} to={link.path}
+                className={`text-sm font-medium transition-all duration-200 relative group ${
+                  isActive(link.path) ? 'text-accent' : 'text-white/75 hover:text-white'
+                }`}
               >
                 {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
+                <span className={`absolute -bottom-0.5 left-0 h-px bg-accent transition-all duration-300 ${isActive(link.path) ? 'w-full' : 'w-0 group-hover:w-full'}`} />
               </Link>
             ))}
             {user?.role === 'admin' && (
-              <Link 
-                to="/admin" 
-                className="text-sm font-medium text-white hover:text-accent transition-colors relative group"
-              >
-                Admin Dashboard
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-text transition-all duration-300 group-hover:w-full"></span>
+              <Link to="/admin" className="text-xs font-bold text-accent/80 hover:text-accent transition-colors px-3 py-1.5 rounded-full border border-accent/30 hover:border-accent">
+                Admin Panel
               </Link>
             )}
           </nav>
 
-          <div className="flex items-center gap-4 text-white">
-            <button onClick={() => setShowSearch(true)} className="hover:text-accent transition-colors">
-              <Search size={20} />
+          {/* Right — Actions */}
+          <div className="flex items-center gap-3 text-white">
+            <button onClick={() => setShowSearch(true)}
+              className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-all">
+              <Search size={18} />
             </button>
-            
-            <Link to="/wishlist" className="relative hover:text-accent transition-colors">
-              <Heart size={20} />
-              {wishlistCount > 0 && <span className="absolute -top-1 -right-1 w-2 h-2 bg-accent rounded-full"></span>}
+
+            <Link to="/wishlist" className="relative w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-all">
+              <Heart size={18} />
+              {wishlistCount > 0 && (
+                <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full" />
+              )}
             </Link>
 
             {user ? (
-              <Link to="/profile" className="hover:text-accent transition-colors">
-                <User size={20} />
+              <Link to="/profile" className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-all">
+                <User size={18} />
               </Link>
             ) : (
-              <Link to="/login" className="text-sm font-medium text-text-700 hover:text-accent transition-colors hidden sm:block">
+              <Link to="/login" className="hidden sm:block text-sm font-medium text-white/70 hover:text-white transition-colors">
                 Sign In
               </Link>
             )}
 
-            <button onClick={onCartOpen} className="relative hover:text-accent transition-colors">
-              <ShoppingBag size={20} />
+            <button onClick={onCartOpen}
+              className="relative w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-all">
+              <ShoppingBag size={18} />
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs font-bold text-white">
+                <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white shadow-lg">
                   {cartCount}
                 </span>
               )}
@@ -102,49 +119,56 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
         </div>
       </header>
 
+      {/* ── Search Overlay ── */}
       <AnimatePresence>
         {showSearch && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-surface/95 z-[200] backdrop-blur-lg flex flex-col"
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-surface/98 z-[200] backdrop-blur-xl flex flex-col"
           >
-            <div className="container mx-auto px-6 py-6 flex justify-end">
-              <button onClick={() => { setShowSearch(false); setSearchQuery(''); }} className="group p-2">
-                <X size={28} className="text-muted group-hover:text-text transition-transform duration-300 group-hover:rotate-90"/>
+            <div className="container mx-auto px-6 pt-8 flex justify-between items-center">
+              <p className="text-xs text-muted/50 uppercase tracking-widest font-semibold">Search</p>
+              <button onClick={() => { setShowSearch(false); setSearchQuery(''); }}
+                className="w-10 h-10 rounded-full hover:bg-primary/10 flex items-center justify-center transition-all group">
+                <X size={22} className="text-text-700 group-hover:rotate-90 transition-transform duration-300" />
               </button>
             </div>
-            
-            <div className="flex-1 overflow-y-auto px-6 pb-20">
-              <div className="max-w-2xl mx-auto mt-8">
-                <div className="relative">
-                  <input 
-                    autoFocus
-                    placeholder="Search products..." 
-                    className="w-full text-2xl font-sans bg-transparent border-b-2 border-muted/20 focus:border-accent pb-4 outline-none text-text placeholder:text-muted/50 text-center"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                  <div className="absolute top-1/2 right-0 -translate-y-1/2 text-muted/50">
-                    <Search size={24} />
-                  </div>
-                </div>
-                
-                {searchResults.length > 0 && (
-                  <div className="mt-8 space-y-6">
+
+            <div className="flex-1 overflow-y-auto">
+              <div className="container mx-auto px-6 py-8 max-w-2xl">
+                <input
+                  autoFocus
+                  placeholder="Search products, categories…"
+                  className="w-full text-3xl md:text-4xl font-serif font-light bg-transparent border-b-2 border-muted/20 focus:border-accent pb-4 outline-none text-text-700 placeholder:text-muted/30 transition-colors"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+
+                {searchResults.length > 0 ? (
+                  <div className="mt-8 space-y-3">
                     {searchResults.map(p => (
-                      <Link to={`/product/${p.id}`} key={p.id} onClick={() => { setShowSearch(false); setSearchQuery(''); }} className="group flex gap-4 items-center p-2 rounded-lg hover:bg-accent/10">
-                        <div className="w-16 h-20 overflow-hidden rounded-md bg-surface">
-                          <img src={p.image} className="w-full h-full object-cover" />
+                      <Link to={`/product/${p.id}`} key={p.id}
+                        onClick={() => { setShowSearch(false); setSearchQuery(''); }}
+                        className="group flex gap-4 items-center p-3 rounded-xl hover:bg-accent/5 transition-all">
+                        <div className="w-14 h-18 aspect-[3/4] overflow-hidden rounded-lg bg-surface-100 shrink-0">
+                          <img src={p.image} className="w-full h-full object-cover object-top" />
                         </div>
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-text group-hover:text-accent transition-colors">{p.name}</h4>
-                          <p className="text-sm text-muted">₹{p.price}</p>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-accent font-semibold tracking-widest uppercase mb-1">{p.category}</p>
+                          <h4 className="font-serif text-lg text-text-700 group-hover:text-accent transition-colors truncate">{p.name}</h4>
+                          <p className="text-text-700 font-bold mt-1">₹{p.price}</p>
                         </div>
+                        <div className="text-muted/30 group-hover:text-accent group-hover:translate-x-1 transition-all shrink-0">→</div>
                       </Link>
                     ))}
                   </div>
+                ) : searchQuery.length > 1 ? (
+                  <p className="text-center text-muted/50 text-lg mt-16 font-light">No results for "<span className="text-text-700">{searchQuery}</span>"</p>
+                ) : (
+                  <p className="text-center text-muted/40 text-base mt-16 font-light">Start typing to search…</p>
                 )}
               </div>
             </div>
@@ -152,75 +176,65 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
         )}
       </AnimatePresence>
 
+      {/* ── Mobile Menu ── */}
       <AnimatePresence>
         {mobileMenuOpen && (
-                      <motion.div initial={{ opacity: 0, x: '-100%' }} animate="visible" exit="hidden" variants={{ visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 300, damping: 30, staggerChildren: 0.1, delayChildren: 0.2 } }, hidden: { opacity: 0, x: '-100%', transition: { type: "spring", stiffness: 300, damping: 30, staggerChildren: 0.05, staggerDirection: -1 } } }} className="fixed top-0 bottom-0 left-0 w-1/2 z-[150] bg-surface flex flex-col md:hidden">            <div className="p-6 flex justify-between items-center border-b border-muted/10">
-              <span className="font-serif font-bold text-xl text-text-700">{settings.site_short_name}</span>
-              <button onClick={() => setMobileMenuOpen(false)}><X size={24} className="text-text-700"/></button>
-            </div>
-            <div className="flex flex-col items-center justify-center flex-1 gap-6">
-               {[
-                  { name: 'Home', path: '/' },
-                  { name: 'Shop', path: '/shop' },
-                  { name: 'About', path: '/about' },
-                  { name: 'Contact', path: '/contact' },
-               ].map((link) => (
-                <motion.div
-                  key={link.name}
-                  variants={{
-                    visible: { opacity: 1, y: 0 },
-                    hidden: { opacity: 0, y: 20 }
-                  }}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <Link to={link.path} onClick={() => setMobileMenuOpen(false)} className="text-xl font-semibold text-text hover:text-accent transition-colors py-2 px-4 rounded-md hover:bg-accent-light">
-                    {link.name}
+          <>
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/40 z-[140] md:hidden"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <motion.div
+              initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
+              transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+              className="fixed top-0 bottom-0 left-0 w-72 z-[150] bg-primary flex flex-col md:hidden shadow-2xl"
+            >
+              <div className="p-6 flex justify-between items-center border-b border-white/10">
+                <span className="font-serif text-xl text-white">{settings?.site_short_name || BRAND_CONFIG.shortName}</span>
+                <button onClick={() => setMobileMenuOpen(false)}
+                  className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white/70 hover:text-white">
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="flex-1 flex flex-col justify-center px-6 gap-2">
+                {navLinks.map((link, i) => (
+                  <motion.div key={link.name}
+                    initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.07 }}>
+                    <Link to={link.path}
+                      className={`flex items-center gap-3 py-4 px-4 rounded-xl text-lg font-serif font-light transition-all ${
+                        isActive(link.path)
+                          ? 'text-accent bg-white/5'
+                          : 'text-white/70 hover:text-white hover:bg-white/5'
+                      }`}>
+                      {link.name}
+                    </Link>
+                  </motion.div>
+                ))}
+                {user?.role === 'admin' && (
+                  <Link to="/admin" className="py-4 px-4 text-accent text-base font-semibold">Admin Panel</Link>
+                )}
+              </div>
+
+              <div className="p-6 border-t border-white/10">
+                {user ? (
+                  <div className="space-y-3">
+                    <Link to="/profile" className="flex items-center gap-3 text-white/70 hover:text-white py-2 text-sm font-medium transition-colors">
+                      <User size={16} /> My Account
+                    </Link>
+                    <button onClick={handleLogout} className="w-full text-left text-red-400/80 hover:text-red-400 py-2 text-sm font-medium transition-colors">
+                      Sign Out
+                    </button>
+                  </div>
+                ) : (
+                  <Link to="/login" className="block w-full text-center btn-primary text-sm py-3">
+                    Sign In
                   </Link>
-                </motion.div>
-              ))}
-            
-              {user?.role === 'admin' && (
-                <motion.div
-                  variants={{
-                    visible: { opacity: 1, y: 0 },
-                    hidden: { opacity: 0, y: 20 }
-                  }}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <Link to="/admin" onClick={() => setMobileMenuOpen(false)} className="text-xl font-semibold text-accent hover:text-text-700 transition-colors py-2 px-4 rounded-md hover:bg-accent-light">Admin Panel</Link>
-                </motion.div>
-              )}
-            </div>
-            <div className="p-6 border-t border-muted/10">
-              {user ? (
-                <motion.div
-                  variants={{
-                    visible: { opacity: 1, y: 0 },
-                    hidden: { opacity: 0, y: 20 }
-                  }}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="w-full text-center text-sm font-medium text-text-700 hover:text-accent py-2 px-4 rounded-md hover:bg-accent-light">
-                    Sign Out
-                  </button>
-                </motion.div>
-              ) : (
-                <motion.div
-                  variants={{
-                    visible: { opacity: 1, y: 0 },
-                    hidden: { opacity: 0, y: 20 }
-                  }}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="block w-full text-center bg-accent text-white px-6 py-3 rounded-lg text-sm font-bold py-2 px-4 rounded-md hover:bg-accent-dark">Sign In</Link>
-                </motion.div>
-              )}
-            </div>
-          </motion.div>
+                )}
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

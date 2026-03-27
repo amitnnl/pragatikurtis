@@ -56,14 +56,16 @@ if ($method == 'GET') {
                 $mail = new PHPMailer(true);
                 try {
                     $mail->isSMTP();
-                    $mail->Host       = 'smtp.example.com';
+                    $mail->Host       = getenv('SMTP_HOST') ?: 'smtp.example.com';
                     $mail->SMTPAuth   = true;
-                    $mail->Username   = 'user@example.com';
-                    $mail->Password   = 'secret';
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                    $mail->Port       = 587;
+                    $mail->Username   = getenv('SMTP_USER') ?: 'user@example.com';
+                    $mail->Password   = getenv('SMTP_PASS') ?: 'secret';
+                    $mail->SMTPSecure = getenv('SMTP_SECURE') === 'ssl' ? PHPMailer::ENCRYPTION_SMTPS : PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port       = getenv('SMTP_PORT') ?: 587;
 
-                    $mail->setFrom('no-reply@pragatikurtis.com', 'Pragati Kurtis Updates');
+                    $from_email = getenv('SMTP_FROM_EMAIL') ?: 'no-reply@pragatikurtis.com';
+                    $from_name = getenv('SMTP_FROM_NAME') ?: 'Pragati Kurtis Updates';
+                    $mail->setFrom($from_email, $from_name);
                     $mail->addAddress($to_email, $to_name);
                     $mail->isHTML(true);
 

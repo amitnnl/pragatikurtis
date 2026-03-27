@@ -42,7 +42,7 @@ export default function Invoice({ order, onClose }) {
             <p className="text-sm text-gray-500 font-bold mt-1">GSTIN: {settings.gst_number || '27AABCU9603R1ZN'}</p>
           </div>
           <div className="text-right">
-            <h2 className="text-2xl text-gray-300 font-bold uppercase">Tax Invoice</h2>
+            <h2 className="text-2xl text-gray-300 font-bold uppercase">Invoice</h2>
             <p className="text-sm font-bold mt-2">Inv #{order.id}</p>
             <p className="text-sm text-gray-500">Date: {new Date(order.created_at).toLocaleDateString()}</p>
             <p className="text-sm text-gray-500">Place of Supply: {order.shipping_state}</p>
@@ -101,43 +101,10 @@ export default function Invoice({ order, onClose }) {
               <span>₹{shipping.toFixed(2)}</span>
             </div>
             
-            {taxDetails ? (
-               taxDetails.type === 'inter' ? (
-                  <div className="flex justify-between text-sm text-gray-600">
-                    <span>IGST ({taxDetails.igst_rate}%)</span>
-                    <span>₹{parseFloat(taxDetails.igst).toFixed(2)}</span>
-                  </div>
-               ) : (
-                  <>
-                    <div className="flex justify-between text-sm text-gray-600">
-                      <span>CGST ({taxDetails.cgst_rate}%)</span>
-                      <span>₹{parseFloat(taxDetails.cgst).toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between text-sm text-gray-600">
-                      <span>SGST ({taxDetails.sgst_rate}%)</span>
-                      <span>₹{parseFloat(taxDetails.sgst).toFixed(2)}</span>
-                    </div>
-                  </>
-               )
-            ) : (
-              isInterState ? (
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>IGST ({((totalTax / (subTotal || 1)) * 100).toFixed(0)}%)</span>
-                  <span>₹{totalTax.toFixed(2)}</span>
-                </div>
-              ) : (
-                <>
-                  <div className="flex justify-between text-sm text-gray-600">
-                    <span>CGST ({((totalTax / 2 / (subTotal || 1)) * 100).toFixed(0)}%)</span>
-                    <span>₹{(totalTax / 2).toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-600">
-                    <span>SGST ({((totalTax / 2 / (subTotal || 1)) * 100).toFixed(0)}%)</span>
-                    <span>₹{(totalTax / 2).toFixed(2)}</span>
-                  </div>
-                </>
-              )
-            )}
+            <div className="flex justify-between text-sm text-gray-600">
+              <span>Including GST</span>
+              <span></span>
+            </div>
 
             <div className="flex justify-between text-xl font-bold border-t border-gray-200 pt-3 mt-2">
               <span>Total</span>

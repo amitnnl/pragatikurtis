@@ -8,10 +8,9 @@ export default {
     extend: {
       colors: {
         primary: 'hsl(var(--color-primary) / <alpha-value>)',
-        'primary-light': 'hsl(var(--color-primary) / 0.8 / <alpha-value>)',
         accent: 'hsl(var(--color-accent) / <alpha-value>)',
-        'accent-dark': 'hsl(var(--color-accent) / 0.9 / <alpha-value>)',
-        'accent-light': 'hsl(var(--color-accent) / 0.2 / <alpha-value>)',
+        'accent-dark': 'hsl(30 70% 44% / <alpha-value>)',
+        'accent-light': 'hsl(30 80% 53% / 0.12)',
         surface: 'hsl(var(--color-surface) / <alpha-value>)',
         'surface-100': 'hsl(var(--color-surface) / 0.95 / <alpha-value>)',
         'surface-200': 'hsl(var(--color-surface) / 0.9 / <alpha-value>)',
@@ -48,9 +47,11 @@ export default {
         serif: ['var(--font-serif)', 'serif'],
       },
       borderRadius: {
-        'lg': '0.5rem',
-        'xl': '0.75rem',
-        '2xl': '1rem',
+        'lg': '0.625rem',
+        'xl': '1rem',
+        '2xl': '1.25rem',
+        '3xl': '1.75rem',
+        'full': '9999px',
       },
       boxShadow: {
         'sm': '0 1px 2px 0 rgb(0 0 0 / 0.05)',

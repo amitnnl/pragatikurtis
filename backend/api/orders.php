@@ -189,6 +189,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
             }
 
+            // Award Loyalty Points (1 point for every 100rs spent)
+            if ($user_id) {
+                $points_earned = floor($total_amount / 100);
+                if ($points_earned > 0) {
+                    $upd_points = $db->prepare("UPDATE users SET loyalty_points = loyalty_points + ? WHERE id = ?");
+                    $upd_points->execute([$points_earned, $user_id]);
+                }
+                
+                // Also, clear their abandoned cart if they had one
+                $del_cart = $db->prepare("DELETE FROM abandoned_carts WHERE user_email = ?");
+                $user_query = $db->prepare("SELECT email FROM users WHERE id = ?");
+                $user_query->execute([$user_id]);
+                $u_email = $user_query->fetchColumn();
+                if($u_email) $del_cart->execute([$u_email]);
+            } else if ($guest_email) {
+                // Clear guest's abandoned cart
+                $del_cart = $db->prepare("DELETE FROM abandoned_carts WHERE user_email = ?");
+                $del_cart->execute([$guest_email]);
+            }
 
             $db->commit();
             echo json_encode(["status" => "success", "message" => "Order placed successfully!", "order_id" => $order_id]);
