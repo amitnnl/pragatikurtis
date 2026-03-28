@@ -41,7 +41,17 @@ function AppContent({
   const location = useLocation();
   const { showToast } = useToast()
   const [footerEmail, setFooterEmail] = useState('');
+  const [visitorCount, setVisitorCount] = useState(null);
   const { settings } = useSettings();
+
+  useEffect(() => {
+    authFetch('/visitor_counter.php')
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success') setVisitorCount(data.count);
+      })
+      .catch(console.error);
+  }, []);
   // Don't block app render while settings load — let pages handle their own loading states
   const isPanelPage = location.pathname.startsWith('/admin') || location.pathname.startsWith('/profile');
 
@@ -198,7 +208,14 @@ function AppContent({
 
             {/* Bottom Bar */}
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8 text-[13px] text-white/30">
-              <p>© {new Date().getFullYear()} {settings?.site_name || BRAND_CONFIG.name}. All rights reserved.</p>
+              <div className="flex flex-col md:flex-row items-center gap-4">
+                <p>© {new Date().getFullYear()} {settings?.site_name || BRAND_CONFIG.name}. All rights reserved.</p>
+                {visitorCount !== null && (
+                  <span className="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-[11px] font-medium tracking-widest uppercase text-white/60">
+                     Visitors: {visitorCount}
+                  </span>
+                )}
+              </div>
               <div className="flex gap-6">
                 <Link to="/privacy" className="hover:text-white/70 transition-colors">Privacy Policy</Link>
                 <Link to="/terms" className="hover:text-white/70 transition-colors">Terms of Service</Link>
