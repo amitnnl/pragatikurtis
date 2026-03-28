@@ -96,7 +96,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($data->action)) {
                     } catch (Exception $e) {
                         error_log("Welcome email could not be sent to {$email}. Mailer Error: {$mail->ErrorInfo}");
                     }
-                    echo json_encode(["message" => "User created successfully", "status" => "success", "user" => $user]);
+                    // Generate JWT for automatic login after registration
+                    $issuer = FRONTEND_URL;
+                    $audience = FRONTEND_URL;
+                    $issuedAt = time();
+                    $expirationTime = $issuedAt + 3600; // JWT valid for 1 hour
+
+                    $token = array(
+                       "iss" => $issuer,
+                       "aud" => $audience,
+                       "iat" => $issuedAt,
+                       "exp" => $expirationTime,
+                       "data" => array(
+                           "id" => $user['id'],
+                           "name" => $user['name'],
+                           "email" => $user['email'],
+                           "role" => $user['role']
+                       )
+                    );
+                    
+                    $jwt = JWT::encode($token, Security::$JWT_SECRET_KEY, 'HS256');
+
+                    echo json_encode(["message" => "User created successfully", "status" => "success", "user" => $user, "jwt" => $jwt]);
                 } else {
                     echo json_encode(["message" => "Unable to create user.", "status" => "error"]);
                 }
@@ -143,19 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($data->action)) {
                 echo json_encode(["message" => "Login successful", "status" => "success", "user" => $user, "jwt" => $jwt]);
             } else {
                 http_response_code(401);
-                
-                // Debugging: Check if the hash is truncated in the DB
-                $debug_info = [
-                    'message' => 'Invalid credentials',
-                    'status' => 'error',
-                    'debug' => [
-                        'password_received' => $data->password,
-                        'hash_from_db' => $user ? $user['password_hash'] : 'User not found.',
-                        'hash_length' => $user ? strlen($user['password_hash']) : 0,
-                        'expected_hash_length' => 60
-                    ]
-                ];
-                echo json_encode($debug_info);
+                echo json_encode(['message' => 'Invalid email or password.', 'status' => 'error']);
             }
         }
     } else if ($data->action == 'forgot_password') {

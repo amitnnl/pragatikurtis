@@ -251,25 +251,8 @@ export default function App() {
     fetchProducts();
   }, []);
 
-  // Resume pending action after login
-  useEffect(() => {
-    if (user) {
-      const pendingAction = sessionStorage.getItem('pendingAction');
-      if (pendingAction) {
-        try {
-          const { type, payload } = JSON.parse(pendingAction);
-          if (type === 'ADD_TO_CART') {
-            addToCart(payload);
-          } else if (type === 'TOGGLE_WISHLIST') {
-            onToggleWishlist(payload);
-          }
-          sessionStorage.removeItem('pendingAction');
-        } catch (e) {
-          console.error("Failed to execute pending action:", e);
-        }
-      }
-    }
-  }, [user]);
+
+
 
 
 
@@ -282,11 +265,7 @@ export default function App() {
   }, [wishlist])
 
   const onToggleWishlist = (product) => {
-    if (!user) {
-      sessionStorage.setItem('pendingAction', JSON.stringify({ type: 'TOGGLE_WISHLIST', payload: product }));
-      window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
-      return;
-    }
+    // Guests can save to wishlist freely — stored locally
     setWishlist(prev => {
       const isExist = prev.find(item => item.id === product.id)
       if (isExist) return prev.filter(item => item.id !== product.id)
@@ -295,12 +274,7 @@ export default function App() {
   }
 
   const addToCart = (product) => {
-    if (!user) {
-      sessionStorage.setItem('pendingAction', JSON.stringify({ type: 'ADD_TO_CART', payload: product }));
-      window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
-      return;
-    }
-
+    // Guests can add to cart freely — login is only required at checkout
     const { selectedSize, selectedColor, selectedFabric } = product;
     // Determine price based on user role and approval status
     const isApprovedDealer = user?.role === 'dealer' && user?.is_approved == 1;
@@ -309,19 +283,16 @@ export default function App() {
     // Create a unique ID for the cart item based on product and variants
     const cartItemId = `${product.id}-${selectedSize || 'none'}-${selectedColor || 'none'}-${selectedFabric || 'none'}`;
 
-
     setCart(prev => {
       const existingItem = prev.find(item => item.cartItemId === cartItemId);
 
       if (existingItem) {
-        // If the exact item (including variants) exists, increase its quantity
         return prev.map(item =>
           item.cartItemId === cartItemId
-            ? { ...item, quantity: item.quantity + 1, price: priceToUse } // Update price just in case
+            ? { ...item, quantity: item.quantity + 1, price: priceToUse }
             : item
         );
       } else {
-        // Otherwise, add the new item with its variants and a unique cartItemId
         return [...prev, { ...product, quantity: 1, cartItemId, price: priceToUse }];
       }
     });

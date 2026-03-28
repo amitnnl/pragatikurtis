@@ -43,10 +43,15 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
 
   const isActive = (path) => location.pathname === path
 
+  // Force solid navbar on pages with light/white backgrounds where transparent text would be invisible
+  const lightPages = ['/product', '/checkout', '/login', '/register', '/profile', '/forgot-password', '/reset-password', '/wishlist', '/track-order', '/about', '/contact', '/privacy', '/terms', '/sitemap'];
+  const isLightPage = lightPages.some(p => location.pathname.startsWith(p));
+  const isScrolled = scrolled || isLightPage;
+
   return (
     <>
       <header className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ${
-        scrolled
+        isScrolled
           ? 'bg-white/95 backdrop-blur-xl shadow-xl shadow-black/5 py-4'
           : 'bg-transparent py-6'
       }`}>
@@ -55,10 +60,10 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
           {/* Left — Mobile Menu + Logo */}
           <div className="flex items-center gap-4">
             <button onClick={() => setMobileMenuOpen(true)}
-              className={`md:hidden w-9 h-9 flex items-center justify-center rounded-full transition-all ${scrolled ? 'text-text-700 hover:bg-black/5' : 'text-white/70 hover:text-white hover:bg-white/10'}`}>
+              className={`md:hidden w-9 h-9 flex items-center justify-center rounded-full transition-all ${isScrolled ? 'text-text-700 hover:bg-black/5' : 'text-white/70 hover:text-white hover:bg-white/10'}`}>
               <Menu size={20} />
             </button>
-            <Link to="/" className={`font-serif text-2xl font-bold tracking-widest transition-all ${scrolled ? 'text-text-700 hover:text-accent' : 'text-accent hover:text-white'}`}>
+            <Link to="/" className={`font-serif text-2xl font-bold tracking-widest transition-all ${isScrolled ? 'text-text-700 hover:text-accent' : 'text-accent hover:text-white'}`}>
               {settings?.site_short_name || BRAND_CONFIG.shortName}
             </Link>
           </div>
@@ -70,7 +75,7 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
                 className={`text-[13px] font-bold uppercase tracking-[0.15em] transition-all duration-300 relative group ${
                   isActive(link.path) 
                     ? 'text-accent' 
-                    : (scrolled ? 'text-text-700 hover:text-accent' : 'text-white/80 hover:text-accent')
+                    : (isScrolled ? 'text-text-700 hover:text-accent' : 'text-white/80 hover:text-accent')
                 }`}
               >
                 {link.name}
@@ -79,7 +84,7 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
             ))}
             {user?.role === 'admin' && (
               <Link to="/admin" className={`text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-full border transition-all ${
-                scrolled 
+                isScrolled 
                   ? 'text-text-700 border-text-700/20 hover:bg-text-700 hover:text-white hover:border-text-700' 
                   : 'text-accent border-accent/20 hover:bg-accent hover:text-white hover:border-accent'
               }`}>
@@ -89,7 +94,7 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
           </nav>
 
           {/* Right — Actions */}
-          <div className={`flex items-center gap-3 ${scrolled ? 'text-text-700' : 'text-white'}`}>
+          <div className={`flex items-center gap-3 ${isScrolled ? 'text-text-700' : 'text-white'}`}>
             <button onClick={() => setShowSearch(true)}
               className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 hover:text-accent transition-all">
               <Search size={18} />

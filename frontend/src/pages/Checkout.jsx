@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { CheckCircle, ChevronLeft, Tag, ShieldCheck } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { CheckCircle, ChevronLeft, Tag, ShieldCheck, LogIn, UserPlus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { API_BASE_URL } from '../config';
 import useRazorpay from "react-razorpay";
 import authFetch from '../utils/authFetch';
 import { useSettings } from '../context/SettingsContext';
@@ -118,6 +117,49 @@ export default function Checkout({ cart, cartTotal, user, clearCart }) {
       }
   };
 
+  // 1. Gate: User must be logged in to checkout
+  if (!user) {
+    return (
+      <div className="bg-surface pt-28 pb-20 min-h-screen flex items-center justify-center">
+        <SEO title="Checkout" description="Complete your order at Pragati Kurtis." />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center max-w-md mx-auto px-6"
+        >
+          <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <LogIn className="text-accent" size={36} />
+          </div>
+          <h1 className="text-3xl font-serif text-text-700 mb-3">Login to Continue</h1>
+          <p className="text-muted/60 font-light mb-8">
+            Please sign in to your account to complete your purchase and track your orders.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              to={`/login?redirect=/checkout`}
+              className="btn-primary flex items-center gap-2 justify-center"
+            >
+              <LogIn size={16} /> Sign In
+            </Link>
+            <Link
+              to={`/register?redirect=/checkout`}
+              className="btn-outline flex items-center gap-2 justify-center"
+            >
+              <UserPlus size={16} /> Create Account
+            </Link>
+          </div>
+          <button
+            onClick={() => navigate(-1)}
+            className="mt-6 text-xs text-muted/40 hover:text-accent transition-colors uppercase tracking-widest font-bold"
+          >
+            ← Continue Shopping
+          </button>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // 2. Gate: Cart must not be empty
   if (cart.length === 0 && step !== 3) {
     return (
       <div className="container mx-auto px-6 py-40 text-center">

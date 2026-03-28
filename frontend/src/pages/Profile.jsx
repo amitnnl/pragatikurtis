@@ -33,6 +33,78 @@ const DashboardCard = ({ title, value, icon }) => {
     );
 }
 
+function ChangePasswordTab({ user }) {
+  const [form, setForm] = useState({ current_password: '', new_password: '', confirm_password: '' });
+  const [msg, setMsg] = useState({ type: '', text: '' });
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMsg({ type: '', text: '' });
+    if (form.new_password !== form.confirm_password) {
+      setMsg({ type: 'error', text: 'New passwords do not match.' });
+      return;
+    }
+    if (form.new_password.length < 8) {
+      setMsg({ type: 'error', text: 'New password must be at least 8 characters.' });
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await authFetch('/update_password.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: user.id, current_password: form.current_password, new_password: form.new_password, confirm_new_password: form.confirm_password })
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setMsg({ type: 'success', text: 'Password updated successfully!' });
+        setForm({ current_password: '', new_password: '', confirm_password: '' });
+      } else {
+        setMsg({ type: 'error', text: data.message || 'Failed to update password.' });
+      }
+    } catch {
+      setMsg({ type: 'error', text: 'Network error. Please try again.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-8">
+      <h3 className="text-2xl font-serif text-text-700">Account Security</h3>
+      <div className="bg-white p-8 rounded-3xl border border-muted/8 shadow-sm max-w-md">
+        {msg.text && (
+          <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+            className={`mb-6 p-4 rounded-2xl text-sm ${msg.type === 'success' ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-red-50 text-red-700 border border-red-100'}`}>
+            {msg.text}
+          </motion.div>
+        )}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-muted/50 uppercase tracking-widest ml-1">Current Password</label>
+            <input type="password" required placeholder="••••••••" className="input-field py-2.5"
+              value={form.current_password} onChange={e => setForm({...form, current_password: e.target.value})}/>
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-muted/50 uppercase tracking-widest ml-1">New Password</label>
+            <input type="password" required placeholder="Min 8 characters" className="input-field py-2.5"
+              value={form.new_password} onChange={e => setForm({...form, new_password: e.target.value})}/>
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-muted/50 uppercase tracking-widest ml-1">Confirm New Password</label>
+            <input type="password" required placeholder="••••••••" className="input-field py-2.5"
+              value={form.confirm_password} onChange={e => setForm({...form, confirm_password: e.target.value})}/>
+          </div>
+          <button type="submit" disabled={loading} className="btn-primary w-full py-4 uppercase tracking-widest text-[10px] disabled:opacity-60 disabled:translate-y-0 disabled:shadow-none">
+            {loading ? 'Updating…' : 'Update Password'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 export default function Profile({ user, setUser }) {
   const [orders, setOrders] = useState([]);
   const [addresses, setAddresses] = useState([]);
@@ -304,24 +376,7 @@ export default function Profile({ user, setUser }) {
           </div>
         );
       case 'change_password':
-        return (
-           <div className="space-y-8">
-             <h3 className="text-2xl font-serif text-text-700">Account Security</h3>
-             <div className="bg-white p-8 rounded-3xl border border-muted/8 shadow-sm max-w-md">
-                <form className="space-y-6">
-                   <div className="space-y-1.5">
-                     <label className="text-[10px] font-bold text-muted/50 uppercase tracking-widest ml-1">Current Password</label>
-                     <input type="password" placeholder="••••••••" className="input-field py-2.5"/>
-                   </div>
-                   <div className="space-y-1.5">
-                     <label className="text-[10px] font-bold text-muted/50 uppercase tracking-widest ml-1">New Password</label>
-                     <input type="password" placeholder="••••••••" className="input-field py-2.5"/>
-                   </div>
-                   <button type="submit" className="btn-primary w-full py-4 uppercase tracking-widest text-[10px]">Update Password</button>
-                </form>
-             </div>
-           </div>
-        );
+        return <ChangePasswordTab user={user} />;
       default: return null;
     }
   };

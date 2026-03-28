@@ -80,7 +80,7 @@ class SocialMediaPoster {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         
         $response = curl_exec($ch);
-        curl_close($ch);
+        // curl_close() is deprecated since PHP 8.5; handle is freed automatically.
         return $response;
     }
 }

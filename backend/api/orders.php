@@ -148,15 +148,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 try {
                     //Server settings
                     $mail->isSMTP();
-                    $mail->Host       = 'smtp.gmail.com';  // Set the SMTP server to send through
+                    $mail->Host       = getenv('SMTP_HOST');
                     $mail->SMTPAuth   = true;
-                    $mail->Username   = 'user@example.com'; // SMTP username
-                    $mail->Password   = 'secret';           // SMTP password
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                    $mail->Port       = 587;
+                    $mail->Username   = getenv('SMTP_USER');
+                    $mail->Password   = getenv('SMTP_PASS');
+                    $mail->SMTPSecure = getenv('SMTP_SECURE') ?: PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port       = getenv('SMTP_PORT') ?: 587;
 
                     //Recipients
-                    $mail->setFrom('from@example.com', 'Pragati Kurtis Order');
+                    $mail->setFrom(getenv('SMTP_FROM_EMAIL') ?: 'no-reply@example.com', getenv('SMTP_FROM_NAME') ?: 'Pragati Kurtis');
                     $mail->addAddress($guest_email, $guest_name);
 
                     // Content
