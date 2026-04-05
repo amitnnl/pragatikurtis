@@ -79,8 +79,23 @@ export default function CartDrawer({ isOpen, onClose, cart, updateQuantity, remo
                           <Trash2 size={14} />
                         </button>
                       </div>
-                      {item.selectedSize && (
-                        <p className="text-xs text-muted/60 mt-1">Size: {item.selectedSize}</p>
+                      {/* Variants and Sizes */}
+                      <p className="text-[11px] text-muted/70 mt-1 flex flex-wrap gap-x-1.5">
+                        {item.selectedSize && <span>Size: <strong className="text-text-700">{item.selectedSize}</strong></span>}
+                        {item.selectedColor && <span>| {item.selectedColor}</span>}
+                        {item.selectedFabric && <span>| {item.selectedFabric}</span>}
+                      </p>
+
+                      {/* Custom Stitching Badge */}
+                      {item.isCustomStitching && (
+                        <div className="mt-1.5 p-1.5 bg-accent/10 rounded-md border border-accent/20">
+                           <p className="text-[10px] font-bold text-accent mb-0.5">Custom Fit (+₹150)</p>
+                           {item.customMeasurements && (
+                             <p className="text-[9px] text-text-500 leading-tight">
+                               B:{item.customMeasurements.bust || '-'}, W:{item.customMeasurements.waist || '-'}, H:{item.customMeasurements.hips || '-'}, L:{item.customMeasurements.length || '-'}
+                             </p>
+                           )}
+                        </div>
                       )}
                       <div className="flex justify-between items-center mt-auto pt-2">
                         <div className="flex items-center gap-1 border border-surface-200 rounded-lg overflow-hidden bg-surface">

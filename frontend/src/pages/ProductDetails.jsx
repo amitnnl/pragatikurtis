@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Star, ShoppingCart, Heart, Minus, Plus, ChevronLeft, Send, CheckCircle } from 'lucide-react';
+import { Star, ShoppingCart, Heart, Minus, Plus, ChevronLeft, Send, CheckCircle, Share2, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProductCard from '../components/ProductCard';
 import SEO from '../components/SEO';
+import VirtualTryOnModal from '../components/VirtualTryOnModal';
+import { useSettings } from '../context/SettingsContext';
 import { API_BASE_URL } from '../config';
 import authFetch from '../utils/authFetch';
 
@@ -19,8 +21,17 @@ const ProductDetails = ({ products, onAddToCart, onToggleWishlist, wishlist, use
   const [availableColors, setAvailableColors] = useState([]); // New state
   const [availableFabrics, setAvailableFabrics] = useState([]); // New state
 
+  const { settings } = useSettings();
+
+  // New states for Bulk Order & Custom Measurements
+  const [bulkQuantities, setBulkQuantities] = useState({});
+  const [isCustomStitching, setIsCustomStitching] = useState(false);
+  const [customMeasurements, setCustomMeasurements] = useState({ bust: '', waist: '', hips: '', length: '' });
+  const isDealer = user?.role === 'dealer' && user?.is_approved == 1;
+
   const isWishlisted = wishlist.some(item => item.id == id);
   const [activeTab, setActiveTab] = useState('description'); // 'description', 'reviews', 'shipping'
+  const [isTryOnOpen, setIsTryOnOpen] = useState(false);
 
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState({ rating: 0, comment: '' });
@@ -124,11 +135,7 @@ const ProductDetails = ({ products, onAddToCart, onToggleWishlist, wishlist, use
   };
 
   const handleAddToCartClick = () => {
-    if (product.sizes && !selectedSize) {
-      setReviewMessage({ type: 'error', text: 'Please select a size.' });
-      return;
-    }
-    // Use product.color and product.fabric directly for validation
+    // Validate Colors/Fabrics first
     if (product.color && product.color.split(',').length > 0 && !selectedColor) {
       setReviewMessage({ type: 'error', text: 'Please select a color.' });
       return;
@@ -137,8 +144,52 @@ const ProductDetails = ({ products, onAddToCart, onToggleWishlist, wishlist, use
       setReviewMessage({ type: 'error', text: 'Please select a fabric.' });
       return;
     }
-    onAddToCart({ ...product, quantity, selectedSize, selectedColor, selectedFabric });
-    setReviewMessage({ type: 'success', text: `${quantity} x ${product.name} added to cart!` });
+
+    if (isDealer) {
+      // B2B Bulk Order Logic
+      const itemsToAdd = [];
+      let totalQty = 0;
+      Object.entries(bulkQuantities).forEach(([size, qty]) => {
+        if (qty > 0) {
+          itemsToAdd.push({
+            ...product, selectedSize: size, selectedColor, selectedFabric, quantity: qty
+          });
+          totalQty += qty;
+        }
+      });
+      
+      if (itemsToAdd.length === 0) {
+        setReviewMessage({ type: 'error', text: 'Please enter a quantity for at least one size in the matrix.' });
+        return;
+      }
+      onAddToCart(itemsToAdd);
+      setReviewMessage({ type: 'success', text: `Added ${totalQty} items to bag!` });
+      setBulkQuantities({}); // Reset after adding
+    } else {
+      // B2C Retail Logic
+      if (product.sizes && !selectedSize) {
+        setReviewMessage({ type: 'error', text: 'Please select a size.' });
+        return;
+      }
+      
+      if (isCustomStitching) {
+         if (!customMeasurements.bust || !customMeasurements.waist || !customMeasurements.hips) {
+           setReviewMessage({ type: 'error', text: 'Please provide at least your Bust, Waist, and Hips measurements.' });
+           return;
+         }
+      }
+      
+      onAddToCart({ 
+        ...product, 
+        quantity, 
+        selectedSize, 
+        selectedColor, 
+        selectedFabric,
+        customMeasurements: isCustomStitching ? customMeasurements : null,
+        isCustomStitching
+      });
+      setReviewMessage({ type: 'success', text: `${quantity} x ${product.name} added to cart!` });
+    }
   };
 
   if (!product) {
@@ -177,6 +228,23 @@ const ProductDetails = ({ products, onAddToCart, onToggleWishlist, wishlist, use
       "reviewCount": reviews.length
     };
   }
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Check out ${product.name}`,
+          text: `I found this beautiful ${product.category} on pragatikurtis!`,
+          url: window.location.href,
+        });
+      } catch (error) {
+        console.log('Error sharing:', error);
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      setReviewMessage({ type: 'success', text: 'Link copied to clipboard!' });
+    }
+  };
 
   return (
     <div className="bg-surface">
@@ -217,13 +285,36 @@ const ProductDetails = ({ products, onAddToCart, onToggleWishlist, wishlist, use
                 </div>
               ))}
             </div>
+            
+            {/* AI Virtual Try-On Button */}
+            {settings?.feature_virtual_try_on !== '0' && (
+              <button 
+                onClick={() => setIsTryOnOpen(true)}
+                className="mt-6 w-full flex items-center justify-center gap-2 py-3 px-4 bg-accent/5 hover:bg-accent/10 border border-accent/20 rounded-xl text-accent font-bold transition-all shadow-sm group"
+              >
+                <Sparkles className="animate-pulse" size={18} />
+                <span className="tracking-wide">AI Virtual Try-On</span>
+                <span className="text-[10px] bg-accent text-white px-2 py-0.5 rounded-full ml-2 opacity-80 group-hover:opacity-100 transition-opacity">Beta</span>
+              </button>
+            )}
           </div>
 
           {/* Product Details */}
           <div className="space-y-6">
             <button onClick={() => navigate(-1)} className="text-muted/70 hover:text-text-700 flex items-center gap-2 mb-4"><ChevronLeft size={20}/> Back to Shop</button>
-            <h1 className="text-4xl font-serif font-bold text-text-700">{product.name}</h1>
-            <p className="text-sm text-muted/70">{product.category} | {product.fabric} | Color: {product.color}</p>
+            <div className="flex justify-between items-start gap-4">
+              <div>
+                <h1 className="text-4xl font-serif font-bold text-text-700">{product.name}</h1>
+                <p className="text-sm text-muted/70 mt-1">{product.category} | {product.fabric} | Color: {product.color}</p>
+              </div>
+              <button 
+                onClick={handleShare}
+                className="p-2.5 rounded-full bg-surface-100 text-text-500 hover:text-accent hover:bg-accent/10 transition-colors shrink-0"
+                aria-label="Share product"
+              >
+                <Share2 size={20} />
+              </button>
+            </div>
             <p className="text-3xl font-bold text-text-700">₹{product.price}</p>
             
             <div className="flex items-center gap-2 text-text-500">
@@ -237,26 +328,115 @@ const ProductDetails = ({ products, onAddToCart, onToggleWishlist, wishlist, use
 
             <p className="text-text-700 leading-relaxed">{product.description}</p>
 
-            {/* Size Selector */}
-            {product.sizes && (
-              <div className="flex items-center gap-4">
-                <span className="text-text-700 font-medium">Size:</span>
-                <div className="flex gap-2">
-                  {product.sizes.split(',').map(size => (
-                    <button
-                      key={size}
-                      onClick={() => setSelectedSize(size.trim())}
-                      className={`px-3 py-1 border rounded-lg text-sm transition-colors ${
-                        selectedSize === size.trim()
-                          ? 'border-accent bg-accent text-surface'
-                          : 'border-muted/20 text-text-700 hover:border-accent'
-                      }`}
-                    >
-                      {size.trim()}
-                    </button>
-                  ))}
+            {/* Dealer Bulk Matrix VS Retail Size */}
+            {isDealer ? (
+              <div className="space-y-4 bg-surface-100 p-4 rounded-xl border border-accent/20">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-text-700 font-bold whitespace-nowrap">Bulk Order Matrix</span>
+                  <span className="text-[10px] uppercase font-bold tracking-wider bg-accent text-white px-2 py-1 rounded">Dealer Access</span>
                 </div>
+                {product.sizes ? (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {product.sizes.split(',').map(size => {
+                       const s = size.trim();
+                       return (
+                         <div key={s} className="flex flex-col gap-1.5">
+                           <label className="text-xs text-text-500 font-bold text-center">Size {s}</label>
+                           <input 
+                             type="number" min="0" placeholder="0"
+                             value={bulkQuantities[s] || ''}
+                             onChange={(e) => setBulkQuantities({...bulkQuantities, [s]: parseInt(e.target.value) || 0})}
+                             className="w-full text-center border border-surface-200 rounded-lg py-2 px-1 focus:border-accent focus:ring-1 focus:ring-accent outline-none text-sm transition-shadow font-medium"
+                           />
+                         </div>
+                       );
+                    })}
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-1 max-w-[150px]">
+                     <label className="text-xs text-text-500 font-bold">Quantity</label>
+                     <input 
+                       type="number" min="1" placeholder="1"
+                       value={bulkQuantities['Standard'] || ''}
+                       onChange={(e) => setBulkQuantities({...bulkQuantities, 'Standard': parseInt(e.target.value) || 0})}
+                       className="w-full border border-surface-200 rounded-lg py-2 px-3 focus:border-accent focus:ring-1 focus:ring-accent outline-none text-sm transition-shadow font-medium"
+                     />
+                  </div>
+                )}
               </div>
+            ) : (
+              <>
+                {product.sizes && (
+                  <div className="flex items-center gap-4">
+                    <span className="text-text-700 font-medium whitespace-nowrap min-w-[70px]">Size:</span>
+                    <div className="flex gap-2 flex-wrap">
+                      {product.sizes.split(',').map(size => (
+                        <button
+                          key={size}
+                          onClick={() => setSelectedSize(size.trim())}
+                          className={`px-4 py-2 border rounded-lg text-sm font-medium transition-colors ${
+                            selectedSize === size.trim()
+                              ? 'border-accent bg-accent text-surface'
+                              : 'border-surface-200 text-text-700 hover:border-accent hover:bg-surface-50'
+                          }`}
+                        >
+                          {size.trim()}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Custom Measurements (Retail Only) */}
+                {settings?.feature_custom_stitching !== '0' && (
+                  <div className="bg-surface-50 border border-surface-200 rounded-xl p-4 mt-2 transition-all">
+                  <label className="flex items-center gap-3 cursor-pointer select-none">
+                    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${isCustomStitching ? 'bg-accent border-accent' : 'border-gray-300 bg-white'}`}>
+                      {isCustomStitching && <CheckCircle size={14} className="text-white" />}
+                    </div>
+                    <input 
+                      type="checkbox" 
+                      checked={isCustomStitching}
+                      onChange={(e) => setIsCustomStitching(e.target.checked)}
+                      className="hidden"
+                    />
+                    <span className="text-sm font-medium text-text-700">Need Custom Fit / Alterations? (+₹150)</span>
+                  </label>
+                  
+                  <AnimatePresence>
+                    {isCustomStitching && (
+                      <motion.div 
+                        initial={{ opacity: 0, height: 0 }} 
+                        animate={{ opacity: 1, height: 'auto' }} 
+                        exit={{ opacity: 0, height: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="grid grid-cols-2 gap-4 mt-5">
+                          {[
+                            { name: 'bust', label: 'Bust (inches)' },
+                            { name: 'waist', label: 'Waist (inches)' },
+                            { name: 'hips', label: 'Hips (inches)' },
+                            { name: 'length', label: 'Total Length' }
+                          ].map(field => (
+                             <div key={field.name}>
+                               <label className="block text-[11px] font-bold text-text-500 uppercase tracking-wide mb-1.5">{field.label}</label>
+                               <input 
+                                 type="text" 
+                                 placeholder="e.g. 36"
+                                 value={customMeasurements[field.name]}
+                                 onChange={(e) => setCustomMeasurements({...customMeasurements, [field.name]: e.target.value})}
+                                 className="w-full text-sm border border-surface-200 rounded-lg p-2.5 focus:border-accent outline-none bg-white transition-colors"
+                               />
+                             </div>
+                          ))}
+                        </div>
+                        <p className="text-[11px] text-danger/70 mt-4 bg-danger-soft p-2 rounded">* Note: Custom stitched items are final sale and non-refundable.</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+                )}
+              </>
             )}
 
             {/* Color Selector */}
@@ -303,15 +483,17 @@ const ProductDetails = ({ products, onAddToCart, onToggleWishlist, wishlist, use
               </div>
             )}
 
-            {/* Quantity Selector */}
-            <div className="flex items-center gap-4">
-              <span className="text-text-700 font-medium">Quantity:</span>
-              <div className="flex items-center border border-muted/20 rounded-lg">
-                <button onClick={() => setQuantity(prev => Math.max(1, prev - 1))} className="p-2 text-muted/70 hover:text-text-700"><Minus size={16}/></button>
-                <span className="px-4 text-text-700">{quantity}</span>
-                <button onClick={() => setQuantity(prev => prev + 1)} className="p-2 text-muted/70 hover:text-text-700"><Plus size={16}/></button>
+            {/* Quantity Selector - Retail Only. Dealers use matrix. */}
+            {!isDealer && (
+              <div className="flex items-center gap-4 pt-2">
+                <span className="text-text-700 font-medium whitespace-nowrap min-w-[70px]">Quantity:</span>
+                <div className="flex items-center border border-surface-200 rounded-lg overflow-hidden bg-white shadow-sm">
+                  <button onClick={() => setQuantity(prev => Math.max(1, prev - 1))} className="p-3 text-text-500 hover:text-text-700 hover:bg-surface-50 transition-colors"><Minus size={16}/></button>
+                  <span className="px-5 font-semibold text-text-700">{quantity}</span>
+                  <button onClick={() => setQuantity(prev => prev + 1)} className="p-3 text-text-500 hover:text-text-700 hover:bg-surface-50 transition-colors"><Plus size={16}/></button>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Actions */}
             <div className="flex gap-4 items-center">
@@ -449,6 +631,13 @@ const ProductDetails = ({ products, onAddToCart, onToggleWishlist, wishlist, use
           </div>
         </div>
       </div>
+      
+      {/* Try-On Modal */}
+      <VirtualTryOnModal 
+        isOpen={isTryOnOpen} 
+        onClose={() => setIsTryOnOpen(false)} 
+        product={product} 
+      />
     </div>
   );
 };

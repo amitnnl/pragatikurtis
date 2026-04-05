@@ -1,4 +1,4 @@
-import { Settings, Save, Trash2, Layout, Phone, FileText, Image, Globe, AtSign } from 'lucide-react'
+import { Settings, Save, Trash2, Layout, Phone, FileText, Image, Globe, AtSign, Power, ToggleRight } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { API_BASE_URL } from '../config'
@@ -39,6 +39,21 @@ const FormField = ({ label, name, value, onChange, placeholder, hint, type = 'te
   </div>
 );
 
+const ToggleSwitch = ({ label, hint, checked, onChange }) => (
+  <div className="flex items-center justify-between p-4 bg-surface rounded-xl border border-surface-200">
+    <div className="flex-1 pr-4">
+      <h4 className="text-sm font-bold text-text-700">{label}</h4>
+      {hint && <p className="text-xs text-muted/70 mt-1">{hint}</p>}
+    </div>
+    <div 
+      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${checked ? 'bg-accent' : 'bg-surface-300'}`}
+      onClick={() => onChange(!checked)}
+    >
+      <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${checked ? 'translate-x-5' : 'translate-x-0'}`} />
+    </div>
+  </div>
+);
+
 export default function AdminSettings() {
   const [activeTab, setActiveTab] = useState('general');
   const [settings, setSettings] = useState({
@@ -55,6 +70,9 @@ export default function AdminSettings() {
     map_embed_url: '',
     shipping_cost: '0',
     tax_rate: '0',
+    feature_virtual_try_on: '1',
+    feature_custom_stitching: '1',
+    feature_whatsapp_bot: '1',
   });
   
   const [loading, setLoading] = useState(false);
@@ -174,11 +192,16 @@ export default function AdminSettings() {
     setSettings({ ...settings, [e.target.name]: e.target.value })
   }
 
+  const handleToggle = (key, value) => {
+    setSettings({ ...settings, [key]: value ? '1' : '0' })
+  }
+
   const tabs = [
     { id: 'general', label: 'General Info', icon: Layout },
     { id: 'contact', label: 'Contact & Socials', icon: Phone },
     { id: 'pages', label: 'Static Pages', icon: FileText },
     { id: 'banners', label: 'Home Banners', icon: Image },
+    { id: 'features', label: 'Platform Features', icon: ToggleRight },
   ];
 
   return (
@@ -347,6 +370,38 @@ export default function AdminSettings() {
                         Cancel Edit
                       </button>
                     )}
+                  </div>
+                </SettingsSection>
+              </motion.div>
+            )}
+
+            {activeTab === 'features' && (
+              <motion.div key="features" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+                <SettingsSection title="Enable / Disable Advanced Capabilities" icon={Power}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <ToggleSwitch 
+                      label="AI Virtual Try-On" 
+                      hint="Shows the Sparkles 'AI Try-On' button on product pages."
+                      checked={settings.feature_virtual_try_on === '1'} 
+                      onChange={(val) => handleToggle('feature_virtual_try_on', val)} 
+                    />
+                    <ToggleSwitch 
+                      label="Retail Custom Stitching" 
+                      hint="Allows B2C customers to request custom fits (Bust, Waist, etc) for a fee."
+                      checked={settings.feature_custom_stitching === '1'} 
+                      onChange={(val) => handleToggle('feature_custom_stitching', val)} 
+                    />
+                    <ToggleSwitch 
+                      label="AI WhatsApp Assistant" 
+                      hint="Displays the floating Virtual Assistant chat widget globally."
+                      checked={settings.feature_whatsapp_bot === '1'} 
+                      onChange={(val) => handleToggle('feature_whatsapp_bot', val)} 
+                    />
+                  </div>
+                  <div className="bg-accent/10 border border-accent/20 p-4 rounded-xl mt-4">
+                     <p className="text-xs text-text-700 font-medium">
+                       <strong>Note:</strong> Disabling these features instantly removes them for all public visitors. This puts complete power in your hands to toggle massive architectural features dynamically.
+                     </p>
                   </div>
                 </SettingsSection>
               </motion.div>

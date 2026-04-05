@@ -11,6 +11,9 @@ export default function SEO({ title, description, image, url, schema }) {
       <title>{fullTitle}</title>
       <meta name="description" content={fullDesc} />
       
+      {/* Canonical URL for strict deduplication */}
+      {url && <link rel="canonical" href={url} />}
+      
       {/* Open Graph / Facebook */}
       <meta property="og:type" content="website" />
       <meta property="og:title" content={fullTitle} />

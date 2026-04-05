@@ -328,6 +328,9 @@ function OrdersManager() {
             <option value="all">All Status</option>
             <option value="pending">Pending</option>
             <option value="processing">Processing</option>
+            <option value="cutting">Cutting (Mfg)</option>
+            <option value="stitching">Stitching (Mfg)</option>
+            <option value="finishing">Finishing (Mfg)</option>
             <option value="shipped">Shipped</option>
             <option value="delivered">Delivered</option>
             <option value="cancelled">Cancelled</option>
@@ -370,6 +373,9 @@ function OrdersManager() {
                       >
                         <option value="pending">Pending</option>
                         <option value="processing">Processing</option>
+                        <option value="cutting">Cutting (Mfg)</option>
+                        <option value="stitching">Stitching (Mfg)</option>
+                        <option value="finishing">Finishing (Mfg)</option>
                         <option value="shipped">Shipped</option>
                         <option value="delivered">Delivered</option>
                         <option value="cancelled">Cancelled</option>
@@ -761,6 +767,31 @@ function DashboardStats({ products, onEdit }) {
 
       <TopProductsChart stats={stats} />
       
+      {lowStock.length > 0 && (
+        <Card className="p-6">
+          <div className="flex justify-between items-center mb-6">
+             <h3 className="text-xl font-bold text-text-700 flex items-center gap-3">
+               <div className="p-2 bg-warning-soft rounded-lg text-warning"><Package size={24}/></div>
+               Manufacturing Forecast & Low Stock
+             </h3>
+             <span className="text-xs font-bold bg-danger text-white px-3 py-1 rounded-full">{lowStock.length} Alerts</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+             {lowStock.map(p => (
+               <div key={p.id} className="flex gap-4 items-center p-4 border border-warning/20 bg-warning/5 rounded-2xl transition hover:shadow-md">
+                 <img src={p.image_url} className="w-14 h-14 rounded-xl object-cover shadow-sm bg-white" />
+                 <div className="flex-1 min-w-0">
+                   <p className="font-bold text-sm text-text-700 line-clamp-1 truncate">{p.name}</p>
+                   <p className="text-xs text-danger font-bold mt-0.5">Only {p.stock} units left!</p>
+                 </div>
+                 <button onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(`Hi Production Team,\n\nPlease schedule a new bulk manufacturing batch for:\n\n*Product:* ${p.name}\n*Fabric:* ${p.fabric}\n*Current Stock:* ${p.stock}\n\nLet me know the ETA.`)}`, '_blank')} className="shrink-0 group relative p-3 bg-white hover:bg-accent rounded-xl shadow-sm border border-surface-200 hover:border-accent transition-colors">
+                    <CheckCircle size={18} className="text-accent group-hover:text-white transition-colors" />
+                 </button>
+               </div>
+             ))}
+          </div>
+        </Card>
+      )}
     </div>
   )
 }

@@ -6,6 +6,7 @@ import CartDrawer from './components/CartDrawer'
 import ScrollToTop from './components/ScrollToTop'
 import { ToastProvider, useToast } from './components/Toast'
 import SocialWidgets from './components/SocialWidgets'
+import WhatsAppWidget from './components/WhatsAppWidget'
 import CartRecovery from './components/CartRecovery'
 import { BRAND_CONFIG } from './config/branding'
 import authFetch from './utils/authFetch'
@@ -114,7 +115,12 @@ function AppContent({
   return (
     <div className="min-h-screen bg-surface text-text">
       <ScrollToTop />
-      {!isPanelPage && <SocialWidgets />}
+      {!isPanelPage && (
+        <>
+          <SocialWidgets />
+          {settings?.feature_whatsapp_bot !== '0' && <WhatsAppWidget />}
+        </>
+      )}
       <CartRecovery cart={cart} />
       
       {!isPanelPage && (
@@ -290,28 +296,44 @@ export default function App() {
     })
   }
 
-  const addToCart = (product) => {
+  const addToCart = (productOrProducts) => {
     // Guests can add to cart freely — login is only required at checkout
-    const { selectedSize, selectedColor, selectedFabric } = product;
-    // Determine price based on user role and approval status
-    const isApprovedDealer = user?.role === 'dealer' && user?.is_approved == 1;
-    const priceToUse = (isApprovedDealer && product.dealer_price) ? parseFloat(product.dealer_price) : parseFloat(product.price);
-
-    // Create a unique ID for the cart item based on product and variants
-    const cartItemId = `${product.id}-${selectedSize || 'none'}-${selectedColor || 'none'}-${selectedFabric || 'none'}`;
-
+    const productsToAdd = Array.isArray(productOrProducts) ? productOrProducts : [productOrProducts];
+    
     setCart(prev => {
-      const existingItem = prev.find(item => item.cartItemId === cartItemId);
+      let newCart = [...prev];
+      
+      productsToAdd.forEach(product => {
+        const { selectedSize, selectedColor, selectedFabric, customMeasurements } = product;
+        const quantityToAdd = product.quantity || 1;
+        
+        // Determine price based on user role and approval status
+        const isApprovedDealer = user?.role === 'dealer' && user?.is_approved == 1;
+        let priceToUse = (isApprovedDealer && product.dealer_price) ? parseFloat(product.dealer_price) : parseFloat(product.price);
 
-      if (existingItem) {
-        return prev.map(item =>
-          item.cartItemId === cartItemId
-            ? { ...item, quantity: item.quantity + 1, price: priceToUse }
-            : item
-        );
-      } else {
-        return [...prev, { ...product, quantity: 1, cartItemId, price: priceToUse }];
-      }
+        // Add custom stitching fee for retail customers
+        if (product.isCustomStitching && !isApprovedDealer) {
+          priceToUse += 150;
+        }
+
+        // Include customMeasurements in cartItemId if present so they don't stack with non-custom items
+        const measurementsKey = customMeasurements ? JSON.stringify(customMeasurements) : 'none';
+        const cartItemId = `${product.id}-${selectedSize || 'none'}-${selectedColor || 'none'}-${selectedFabric || 'none'}-${measurementsKey}`;
+
+        const existingItemIndex = newCart.findIndex(item => item.cartItemId === cartItemId);
+
+        if (existingItemIndex >= 0) {
+          newCart[existingItemIndex] = {
+            ...newCart[existingItemIndex],
+            quantity: newCart[existingItemIndex].quantity + quantityToAdd,
+            price: priceToUse
+          };
+        } else {
+          newCart.push({ ...product, quantity: quantityToAdd, cartItemId, price: priceToUse });
+        }
+      });
+      
+      return newCart;
     });
     setIsCartOpen(true);
   };
