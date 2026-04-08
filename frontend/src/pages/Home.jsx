@@ -58,7 +58,7 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 1.1, ease: 'easeInOut' }}
-              className="absolute inset-0 bg-cover bg-center"
+              className="absolute inset-0 bg-cover bg-[position:center_top] md:bg-center"
               style={{ backgroundImage: `url('${banners[currentSlide].image_url}')` }}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-primary/80 via-primary/40 to-transparent" />
