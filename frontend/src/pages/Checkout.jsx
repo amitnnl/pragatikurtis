@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { CheckCircle, ChevronLeft, Tag, ShieldCheck, LogIn, UserPlus } from 'lucide-react';
+import { CheckCircle, ChevronLeft, Tag, ShieldCheck, LogIn, UserPlus, MapPin, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useRazorpay from "react-razorpay";
 import authFetch from '../utils/authFetch';
 import { useSettings } from '../context/SettingsContext';
+import { useToast } from '../components/Toast';
 import SEO from '../components/SEO';
 
 export default function Checkout({ cart, cartTotal, user, clearCart }) {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [locating, setLocating] = useState(false);
   const [redeemPoints, setRedeemPoints] = useState(false);
   const [Razorpay] = useRazorpay();
   const { settings } = useSettings();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
   const [shippingAddress, setShippingAddress] = useState({ 
@@ -27,6 +30,45 @@ export default function Checkout({ cart, cartTotal, user, clearCart }) {
   });
 
   const shippingAmount = cartTotal >= 999 ? 100 : 150;
+  
+  const handleUseLocation = () => {
+    if (!navigator.geolocation) {
+      showToast('Geolocation is not supported by your browser', 'error');
+      return;
+    }
+
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`);
+          const data = await res.json();
+          if (data && data.address) {
+            setShippingAddress(prev => ({
+              ...prev,
+              street: data.address.road || data.address.suburb || data.display_name.split(',')[0],
+              city: data.address.city || data.address.town || data.address.village || data.address.county || prev.city,
+              state: data.address.state || prev.state,
+              zip: data.address.postcode || prev.zip,
+              country: data.address.country || prev.country
+            }));
+            showToast('Location detected successfully', 'success');
+          } else {
+            showToast('Could not convert location to address', 'error');
+          }
+        } catch (error) {
+          showToast('Failed to get address. Please enter manually.', 'error');
+        } finally {
+          setLocating(false);
+        }
+      },
+      (error) => {
+        setLocating(false);
+        showToast('Location access denied or failed.', 'error');
+      },
+      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+    );
+  };
   
   // Loyalty points logic: 1 point = ₹1 discount
   const maxPoints = parseInt(user?.loyalty_points || 0);
@@ -204,9 +246,20 @@ export default function Checkout({ cart, cartTotal, user, clearCart }) {
                   {step === 1 && (
                     <motion.div key="shipping" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
                       <div className="bg-white rounded-2xl p-8 border border-muted/8 shadow-sm space-y-6">
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center text-sm font-bold">1</div>
-                          <h3 className="text-xl font-serif text-text-700">Shipping Details</h3>
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center text-sm font-bold">1</div>
+                            <h3 className="text-xl font-serif text-text-700">Shipping Details</h3>
+                          </div>
+                          <button 
+                             type="button" 
+                             onClick={handleUseLocation}
+                             disabled={locating}
+                             className="flex items-center gap-1.5 text-xs font-semibold text-accent hover:text-accent/80 transition-colors bg-accent/10 px-3 py-1.5 rounded-full disabled:opacity-50"
+                          >
+                             {locating ? <Loader2 size={14} className="animate-spin" /> : <MapPin size={14} />} 
+                             {locating ? 'Locating...' : 'Use My Location'}
+                          </button>
                         </div>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
