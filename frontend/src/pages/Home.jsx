@@ -61,17 +61,17 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
               className="absolute inset-0 bg-cover bg-[position:center_top] md:bg-center"
               style={{ backgroundImage: `url('${banners[currentSlide].image_url}')` }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/80 via-primary/40 to-transparent" />
+              <div className="absolute inset-0 bg-black/40 md:bg-black/30" />
             </motion.div>
           </AnimatePresence>
 
           {/* Content */}
-          <div className="relative z-10 h-full flex items-center">
+          <div className="relative z-10 h-full flex items-center justify-center text-center">
             <div className="container mx-auto px-6 md:px-16 pt-12 md:pt-0">
               <motion.div
                 key={`content-${currentSlide}`}
                 initial="hidden" animate="visible"
-                className="max-w-xl space-y-4 md:space-y-6"
+                className="max-w-3xl mx-auto space-y-4 md:space-y-6 flex flex-col items-center"
               >
                 <motion.p variants={fadeUp} custom={0} className="text-accent font-semibold text-xs tracking-[0.25em] uppercase">
                   New Collection
@@ -79,10 +79,10 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
                 <motion.h1 variants={fadeUp} custom={1} className="text-4xl sm:text-5xl md:text-7xl font-serif font-light text-white leading-[1.15] md:leading-[1.1]">
                   {banners[currentSlide].title}
                 </motion.h1>
-                <motion.p variants={fadeUp} custom={2} className="text-white/80 text-base md:text-lg font-light max-w-sm md:max-w-none">
+                <motion.p variants={fadeUp} custom={2} className="text-white/90 text-base md:text-lg font-light max-w-sm md:max-w-xl">
                   {banners[currentSlide].subtitle}
                 </motion.p>
-                <motion.div variants={fadeUp} custom={3} className="flex gap-4 pt-3 md:pt-2">
+                <motion.div variants={fadeUp} custom={3} className="flex gap-4 pt-3 md:pt-2 justify-center">
                   <Link to="/shop" className="btn-primary py-2.5 px-6 md:py-3 md:px-8 text-sm md:text-base">
                     Shop Now
                   </Link>
