@@ -50,7 +50,7 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
 
       {/* ── Hero Slider ── */}
       {banners.length > 0 && (
-        <section className="relative h-[88vh] min-h-[520px] w-full overflow-hidden grain">
+        <section className="relative h-[75vh] md:h-[88vh] min-h-[480px] md:min-h-[520px] w-full overflow-hidden grain">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentSlide}
@@ -67,26 +67,26 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
 
           {/* Content */}
           <div className="relative z-10 h-full flex items-center">
-            <div className="container mx-auto px-8 md:px-16">
+            <div className="container mx-auto px-6 md:px-16 pt-12 md:pt-0">
               <motion.div
                 key={`content-${currentSlide}`}
                 initial="hidden" animate="visible"
-                className="max-w-xl space-y-6"
+                className="max-w-xl space-y-4 md:space-y-6"
               >
                 <motion.p variants={fadeUp} custom={0} className="text-accent font-semibold text-xs tracking-[0.25em] uppercase">
                   New Collection
                 </motion.p>
-                <motion.h1 variants={fadeUp} custom={1} className="text-5xl md:text-7xl font-serif font-light text-white leading-[1.1]">
+                <motion.h1 variants={fadeUp} custom={1} className="text-4xl sm:text-5xl md:text-7xl font-serif font-light text-white leading-[1.15] md:leading-[1.1]">
                   {banners[currentSlide].title}
                 </motion.h1>
-                <motion.p variants={fadeUp} custom={2} className="text-white/70 text-lg font-light">
+                <motion.p variants={fadeUp} custom={2} className="text-white/80 text-base md:text-lg font-light max-w-sm md:max-w-none">
                   {banners[currentSlide].subtitle}
                 </motion.p>
-                <motion.div variants={fadeUp} custom={3} className="flex gap-4 pt-2">
-                  <Link to="/shop" className="btn-primary">
+                <motion.div variants={fadeUp} custom={3} className="flex gap-4 pt-3 md:pt-2">
+                  <Link to="/shop" className="btn-primary py-2.5 px-6 md:py-3 md:px-8 text-sm md:text-base">
                     Shop Now
                   </Link>
-                  <Link to="/about" className="text-white/80 hover:text-white font-medium flex items-center gap-2 group text-sm">
+                  <Link to="/about" className="text-white/90 hover:text-white font-medium flex items-center gap-2 group text-sm">
                     Our Story <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </motion.div>
@@ -94,16 +94,16 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
             </div>
           </div>
 
-          {/* Arrows */}
-          <button onClick={prevSlide} className="absolute left-5 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white transition-all">
+          {/* Arrows - Hidden on mobile, visible on md and up */}
+          <button onClick={prevSlide} className="hidden md:flex absolute left-5 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 backdrop-blur-sm border border-white/20 items-center justify-center text-white transition-all">
             <ChevronLeft size={22} />
           </button>
-          <button onClick={nextSlide} className="absolute right-5 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white transition-all">
+          <button onClick={nextSlide} className="hidden md:flex absolute right-5 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 backdrop-blur-sm border border-white/20 items-center justify-center text-white transition-all">
             <ChevronRight size={22} />
           </button>
 
           {/* Dots */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+          <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
             {banners.map((_, i) => (
               <button key={i} onClick={() => setCurrentSlide(i)}
                 className={`rounded-full cursor-pointer transition-all duration-400 ${currentSlide === i ? 'w-8 h-2 bg-accent' : 'w-2 h-2 bg-white/40 hover:bg-white/70'}`} />
