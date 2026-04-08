@@ -6,7 +6,7 @@ import CartDrawer from './components/CartDrawer'
 import ScrollToTop from './components/ScrollToTop'
 import { ToastProvider, useToast } from './components/Toast'
 import SocialWidgets from './components/SocialWidgets'
-import WhatsAppWidget from './components/WhatsAppWidget'
+import AIChatWidget from './components/AIChatWidget'
 import CartRecovery from './components/CartRecovery'
 import { BRAND_CONFIG } from './config/branding'
 import authFetch from './utils/authFetch'
@@ -118,7 +118,7 @@ function AppContent({
       {!isPanelPage && (
         <>
           <SocialWidgets />
-          {settings?.feature_whatsapp_bot !== '0' && <WhatsAppWidget />}
+          {settings?.feature_whatsapp_bot !== '0' && <AIChatWidget />}
         </>
       )}
       <CartRecovery cart={cart} />
