@@ -73,6 +73,11 @@ export default function AdminSettings() {
     feature_virtual_try_on: '1',
     feature_custom_stitching: '1',
     feature_whatsapp_bot: '1',
+    home_philosophy_subtitle: '',
+    home_philosophy_title: '',
+    home_philosophy_text: '',
+    newsletter_title: '',
+    newsletter_subtitle: '',
   });
   
   const [loading, setLoading] = useState(false);
@@ -265,6 +270,21 @@ export default function AdminSettings() {
                     <FormField label="Short Name (Logo)" name="site_short_name" value={settings.site_short_name} onChange={handleChange} />
                   </div>
                   <FormField label="Tagline / Short Description" name="site_description" value={settings.site_description} onChange={handleChange} />
+                </SettingsSection>
+                
+                <SettingsSection title="Homepage 'Our Story' Section" icon={Layout}>
+                  <FormField label="Small Subtitle (e.g. Our Philosophy)" name="home_philosophy_subtitle" value={settings.home_philosophy_subtitle} placeholder="Our Philosophy" onChange={handleChange} />
+                  <FormField label="Main Bold Title" name="home_philosophy_title" value={settings.home_philosophy_title} placeholder="Elegance in Every Thread" onChange={handleChange} hint="Use HTML like <br /> for newlines or <em> for italics" />
+                  <FormField label="Description Text" name="home_philosophy_text" value={settings.home_philosophy_text} onChange={handleChange}>
+                      <textarea name="home_philosophy_text" value={settings.home_philosophy_text || ''} placeholder="We believe in the timeless beauty..." onChange={handleChange} rows="3" className="w-full p-4 border border-surface-200 rounded-xl outline-none focus:ring-2 focus:ring-accent bg-surface transition-all text-text-700"></textarea>
+                  </FormField>
+                </SettingsSection>
+
+                <SettingsSection title="Newsletter Section" icon={AtSign}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField label="Newsletter Title" name="newsletter_title" value={settings.newsletter_title} placeholder="Get Exclusive Offers" onChange={handleChange} />
+                    <FormField label="Newsletter Subtitle" name="newsletter_subtitle" value={settings.newsletter_subtitle} placeholder="Subscribe to our newsletter..." onChange={handleChange} />
+                  </div>
                 </SettingsSection>
               </motion.div>
             )}

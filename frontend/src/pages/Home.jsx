@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, ArrowRight, Truck, RotateCcw, ShieldCheck, H
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import authFetch from '../utils/authFetch';
+import { useSettings } from '../context/SettingsContext';
 
 const perks = [
   { icon: Truck, title: 'Free Delivery', desc: 'On orders above ₹999' },
@@ -19,6 +20,7 @@ const fadeUp = {
 };
 
 export default function Home({ products, onAddToCart, onToggleWishlist, wishlist, user }) {
+  const { settings } = useSettings();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [banners, setBanners] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -159,12 +161,10 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
           <div className="absolute inset-0" style={{ backgroundImage: 'repeating-linear-gradient(45deg, white 0, white 1px, transparent 0, transparent 50%)', backgroundSize: '12px 12px' }} />
         </div>
         <div className="relative container mx-auto px-6 text-center space-y-6 max-w-3xl">
-          <p className="text-accent text-xs font-semibold tracking-[0.25em] uppercase">Our Philosophy</p>
-          <h2 className="text-4xl md:text-6xl font-serif font-light text-white leading-[1.15]">
-            Elegance in<br /><em>Every Thread</em>
-          </h2>
+          <p className="text-accent text-xs font-semibold tracking-[0.25em] uppercase">{settings?.home_philosophy_subtitle || 'Our Philosophy'}</p>
+          <h2 className="text-4xl md:text-6xl font-serif font-light text-white leading-[1.15]" dangerouslySetInnerHTML={{ __html: settings?.home_philosophy_title || 'Elegance in<br /><em>Every Thread</em>' }} />
           <p className="text-white/50 text-lg font-light leading-relaxed">
-            We believe in the timeless beauty of tradition, woven with a touch of modern elegance. Our collections are crafted to celebrate you.
+            {settings?.home_philosophy_text || 'We believe in the timeless beauty of tradition, woven with a touch of modern elegance. Our collections are crafted to celebrate you.'}
           </p>
           <Link to="/about" className="inline-flex items-center gap-2 btn-outline text-white border-white/30">
             Our Story <ArrowRight size={16} />
@@ -204,8 +204,8 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
       {/* ── Newsletter Strip ── */}
       <section className="py-16 bg-accent/10 border-y border-accent/20">
         <div className="container mx-auto px-6 text-center max-w-2xl">
-          <h3 className="text-2xl md:text-3xl font-serif text-text-700 mb-3">Get Exclusive Offers</h3>
-          <p className="text-muted text-sm mb-6">Subscribe to our newsletter and get 10% off your first order.</p>
+          <h3 className="text-2xl md:text-3xl font-serif text-text-700 mb-3">{settings?.newsletter_title || 'Get Exclusive Offers'}</h3>
+          <p className="text-muted text-sm mb-6">{settings?.newsletter_subtitle || 'Subscribe to our newsletter and get 10% off your first order.'}</p>
           <div className="flex gap-2 max-w-md mx-auto">
             <input type="email" placeholder="Enter your email..." className="input-field flex-1" />
             <button className="btn-primary whitespace-nowrap px-6 py-3">Subscribe</button>
