@@ -25,6 +25,15 @@ try {
     $db->exec($create_carts);
     echo "Successfully created or verified 'abandoned_carts' table.\n";
 
+    // 3. Add phone to addresses table
+    $check_phone = $db->query("SHOW COLUMNS FROM addresses LIKE 'phone'");
+    if ($check_phone->rowCount() == 0) {
+        $db->exec("ALTER TABLE addresses ADD COLUMN phone VARCHAR(20) DEFAULT NULL AFTER user_id");
+        echo "Successfully added 'phone' column to addresses table.\n";
+    } else {
+        echo "'phone' column already exists in addresses table.\n";
+    }
+
 } catch (PDOException $e) {
     echo "Database Error: " . $e->getMessage() . "\n";
 }

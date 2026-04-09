@@ -47,6 +47,7 @@ switch ($method) {
     case 'POST':
         if (!empty($data->user_id) && !empty($data->address_line1) && !empty($data->city)) {
             $user_id = Security::sanitize($data->user_id);
+            $phone = !empty($data->phone) ? Security::sanitize($data->phone) : null;
             $address_line1 = Security::sanitize($data->address_line1);
             $address_line2 = Security::sanitize($data->address_line2 ?? '');
             $city = Security::sanitize($data->city);
@@ -54,9 +55,9 @@ switch ($method) {
             $postal_code = Security::sanitize($data->postal_code);
             $country = Security::sanitize($data->country ?? 'India');
 
-            $query = "INSERT INTO addresses (user_id, address_line1, address_line2, city, state, postal_code, country) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $query = "INSERT INTO addresses (user_id, phone, address_line1, address_line2, city, state, postal_code, country) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $db->prepare($query);
-            if ($stmt->execute([$user_id, $address_line1, $address_line2, $city, $state, $postal_code, $country])) {
+            if ($stmt->execute([$user_id, $phone, $address_line1, $address_line2, $city, $state, $postal_code, $country])) {
                 echo json_encode(["status" => "success", "message" => "Address added successfully."]);
             } else {
                 echo json_encode(["status" => "error", "message" => "Failed to add address."]);
@@ -67,6 +68,7 @@ switch ($method) {
     case 'PUT':
         if (!empty($data->id) && !empty($data->address_line1)) {
             $id = Security::sanitize($data->id);
+            $phone = !empty($data->phone) ? Security::sanitize($data->phone) : null;
             $address_line1 = Security::sanitize($data->address_line1);
             $address_line2 = Security::sanitize($data->address_line2 ?? '');
             $city = Security::sanitize($data->city);
@@ -74,9 +76,9 @@ switch ($method) {
             $postal_code = Security::sanitize($data->postal_code);
             $country = Security::sanitize($data->country ?? 'India');
             
-            $query = "UPDATE addresses SET address_line1 = ?, address_line2 = ?, city = ?, state = ?, postal_code = ?, country = ? WHERE id = ?";
+            $query = "UPDATE addresses SET phone = ?, address_line1 = ?, address_line2 = ?, city = ?, state = ?, postal_code = ?, country = ? WHERE id = ?";
             $stmt = $db->prepare($query);
-            if ($stmt->execute([$address_line1, $address_line2, $city, $state, $postal_code, $country, $id])) {
+            if ($stmt->execute([$phone, $address_line1, $address_line2, $city, $state, $postal_code, $country, $id])) {
                 echo json_encode(["status" => "success", "message" => "Address updated successfully."]);
             } else {
                 echo json_encode(["status" => "error", "message" => "Failed to update address."]);

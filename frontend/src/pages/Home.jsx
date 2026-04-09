@@ -6,14 +6,6 @@ import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import authFetch from '../utils/authFetch';
 
-const featuredCategories = [
-  { name: 'Afghani Suits', image: '/banners/Afghani-Suits.jpg', slug: 'Afghani Suits' },
-  { name: 'Straight Suits', image: '/banners/Straight-Suit.jpeg', slug: 'Straight Suits' },
-  { name: 'Anarkali Suits', image: '/banners/Anarkali-Suit.jpeg', slug: 'Anarkali Suits' },
-  { name: 'Gown / Dresses', image: '/banners/Gown-Dresses.jpeg', slug: 'Gown/Dresses' },
-  { name: 'Sharara Suits', image: '/banners/Sharara-Suit.jpg', slug: 'Sharara Suits' }
-];
-
 const perks = [
   { icon: Truck, title: 'Free Delivery', desc: 'On orders above ₹999' },
   { icon: RotateCcw, title: 'Easy Returns', desc: '30-day return policy' },
@@ -29,9 +21,11 @@ const fadeUp = {
 export default function Home({ products, onAddToCart, onToggleWishlist, wishlist, user }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [banners, setBanners] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     authFetch('/banners.php').then(r => r.json()).then(d => { if (d.length > 0) setBanners(d); }).catch(() => {});
+    authFetch('/categories.php').then(r => r.json()).then(d => { if (d.length > 0) setCategories(d); }).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -141,11 +135,11 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
           </motion.div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5">
-            {featuredCategories.map((cat, i) => (
+            {categories.map((cat, i) => (
               <motion.div key={cat.name} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i * 0.08}>
                 <Link to={`/shop?category=${encodeURIComponent(cat.slug)}`}
                   className="group relative block aspect-[3/4] overflow-hidden rounded-2xl shadow-md card-hover">
-                  <img src={cat.image} alt={cat.name} loading="lazy"
+                  <img src={cat.image_url || cat.image} alt={cat.name} loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-5">

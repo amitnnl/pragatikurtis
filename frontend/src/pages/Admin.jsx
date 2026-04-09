@@ -7,6 +7,7 @@ import Reporting from './Reporting'
 import InventoryHistoryModal from '../components/InventoryHistoryModal'
 import Invoice from '../components/Invoice'
 import ContactInquiries from '../components/ContactInquiries'
+import CategoriesManager from '../components/CategoriesManager'
 import { Link } from 'react-router-dom'
 import { API_BASE_URL } from '../config'
 import authFetch from '../utils/authFetch'
@@ -847,6 +848,7 @@ export default function Admin({ products, refreshProducts }) {
       case 'rfqs': return <RFQsManager />
       case 'inquiries': return <ContactInquiries />
       case 'users': return <UsersManager />
+      case 'categories': return <CategoriesManager />
       case 'coupons': return <CouponManager />
       case 'reviews': return <ReviewManager />
       case 'reports': return <Reporting />
@@ -878,6 +880,7 @@ export default function Admin({ products, refreshProducts }) {
   const navItems = [
       { id: 'dashboard', icon: BarChart2, label: 'Dashboard' },
       { id: 'reports', icon: BarChart2, label: 'Analytics' },
+      { id: 'categories', icon: Tag, label: 'Categories' },
       { id: 'products', icon: Package, label: 'Products' },
       { id: 'orders', icon: ShoppingBag, label: 'Orders' },
       { id: 'rfqs', icon: MessageSquare, label: 'RFQs' },
