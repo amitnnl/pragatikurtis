@@ -153,20 +153,24 @@ function AppContent({
       </div>
 
       {!isPanelPage && (
-        <footer className="bg-primary text-white">
+        <footer className="bg-gray-950 text-white relative overflow-hidden">
+          {/* Subtle background glow */}
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-rose-500/10 rounded-full mix-blend-screen filter blur-[100px] pointer-events-none"></div>
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-amber-500/10 rounded-full mix-blend-screen filter blur-[100px] pointer-events-none"></div>
+
           {/* Main Footer */}
-          <div className="container mx-auto px-6 pt-20 pb-12">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-white/10">
+          <div className="container mx-auto px-6 pt-24 pb-12 relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 pb-16 border-b border-white/10">
               {/* Brand */}
-              <div className="md:col-span-4 space-y-5">
-                <h3 className="font-serif text-2xl font-light">{settings?.site_short_name || BRAND_CONFIG.shortName}</h3>
-                <p className="text-white/40 text-sm leading-relaxed font-light max-w-xs">
+              <div className="md:col-span-4 flex flex-col items-start">
+                <h3 className="font-serif text-4xl md:text-5xl font-light mb-6 tracking-wide drop-shadow-sm">{settings?.site_short_name || BRAND_CONFIG.shortName}</h3>
+                <p className="text-gray-400 text-sm leading-relaxed font-light max-w-sm mb-8">
                   {settings?.site_description || BRAND_CONFIG.tagline}
                 </p>
-                <div className="flex gap-3 pt-2">
+                <div className="flex gap-4">
                   {[['F', BRAND_CONFIG.social.facebook], ['I', BRAND_CONFIG.social.instagram], ['Y', BRAND_CONFIG.social.youtube]].map(([l, href]) => (
                     <a key={l} href={href} target="_blank" rel="noreferrer"
-                      className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-white/50 hover:bg-accent hover:border-accent hover:text-white text-xs font-bold transition-all">
+                      className="w-12 h-12 rounded-full border border-gray-800 flex items-center justify-center text-gray-400 hover:bg-white hover:border-white hover:text-gray-900 font-serif text-lg transition-all duration-300 transform hover:-translate-y-1">
                       {l}
                     </a>
                   ))}
@@ -174,58 +178,68 @@ function AppContent({
               </div>
 
               {/* Shop Links */}
-              <div className="md:col-span-2">
-                <p className="text-xs font-bold tracking-[0.18em] uppercase text-accent mb-5">Shop</p>
-                <ul className="space-y-3 text-sm">
-                  {[['All Products', '/shop'], ['Kurtis', '/shop?category=Kurti'], ['Suit Sets', '/shop?category=Suit Set'], ['Gowns', '/shop?category=Gown/Dresses']].map(([name, path]) => (
-                    <li key={name}><Link to={path} className="text-white/40 hover:text-white transition-colors font-light">{name}</Link></li>
+              <div className="md:col-span-2 md:pt-4">
+                <p className="text-xs font-semibold tracking-[0.3em] uppercase text-rose-200 mb-8">Shop</p>
+                <ul className="space-y-4 text-sm">
+                  {[['All Collections', '/shop'], ['Elegant Kurtis', '/shop?category=Kurti'], ['Suit Sets', '/shop?category=Suit Set'], ['Luxury Gowns', '/shop?category=Gown/Dresses']].map(([name, path]) => (
+                    <li key={name}>
+                      <Link to={path} className="text-gray-400 hover:text-white transition-all duration-300 font-light inline-block relative group">
+                        {name}
+                        <span className="absolute -bottom-1 left-0 w-0 h-px bg-rose-300 transition-all duration-300 group-hover:w-full"></span>
+                      </Link>
+                    </li>
                   ))}
                 </ul>
               </div>
 
               {/* Company Links */}
-              <div className="md:col-span-2">
-                <p className="text-xs font-bold tracking-[0.18em] uppercase text-accent mb-5">Company</p>
-                <ul className="space-y-3 text-sm">
-                  {[['About Us', '/about'], ['Contact', '/contact'], ['My Account', '/profile'], ['Track Order', '/track-order']].map(([name, path]) => (
-                    <li key={name}><Link to={path} className="text-white/40 hover:text-white transition-colors font-light">{name}</Link></li>
+              <div className="md:col-span-2 md:pt-4">
+                <p className="text-xs font-semibold tracking-[0.3em] uppercase text-rose-200 mb-8">World Of Us</p>
+                <ul className="space-y-4 text-sm">
+                  {[['Our Story', '/about'], ['Contact Concierge', '/contact'], ['My Profile', '/profile'], ['Track Order', '/track-order']].map(([name, path]) => (
+                    <li key={name}>
+                      <Link to={path} className="text-gray-400 hover:text-white transition-all duration-300 font-light inline-block relative group">
+                        {name}
+                        <span className="absolute -bottom-1 left-0 w-0 h-px bg-rose-300 transition-all duration-300 group-hover:w-full"></span>
+                      </Link>
+                    </li>
                   ))}
                 </ul>
               </div>
 
               {/* Newsletter */}
-              <div className="md:col-span-4">
-                <p className="text-xs font-bold tracking-[0.18em] uppercase text-accent mb-5">Newsletter</p>
-                <p className="text-white/40 text-sm mb-4 font-light">Subscribe for exclusive deals and new arrivals.</p>
-                <form onSubmit={handleFooterSubscribe} className="flex gap-2">
+              <div className="md:col-span-4 md:pt-4">
+                <p className="text-xs font-semibold tracking-[0.3em] uppercase text-rose-200 mb-8">The Inner Circle</p>
+                <p className="text-gray-400 text-sm mb-6 font-light leading-relaxed max-w-sm">Subscribe to receive exclusive access to our newest collections and exclusive offers.</p>
+                <form onSubmit={handleFooterSubscribe} className="flex flex-col sm:flex-row gap-3">
                   <input
-                    type="email" placeholder="Your email address"
-                    className="flex-1 bg-white/8 border border-white/10 px-4 py-2.5 text-sm text-white placeholder:text-white/30 rounded-xl focus:outline-none focus:border-accent/50 transition-colors"
+                    type="email" placeholder="Email Address"
+                    className="flex-1 bg-white/5 border border-white/10 px-6 py-4 text-sm text-white placeholder:text-gray-500 rounded-full focus:outline-none focus:border-rose-300/50 focus:bg-white/10 transition-all font-light"
                     value={footerEmail}
                     onChange={e => setFooterEmail(e.target.value)}
                     required
                   />
-                  <button type="submit" className="bg-accent text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-opacity-90 transition-all whitespace-nowrap">
-                    Subscribe
+                  <button type="submit" className="bg-white text-gray-900 px-8 py-4 rounded-full text-xs font-bold tracking-widest uppercase hover:bg-rose-50 hover:shadow-lg hover:shadow-white/10 transition-all duration-300 whitespace-nowrap">
+                    Join
                   </button>
                 </form>
               </div>
             </div>
 
             {/* Bottom Bar */}
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8 text-[13px] text-white/30">
-              <div className="flex flex-col md:flex-row items-center gap-4">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-10 text-xs tracking-wider uppercase font-semibold text-gray-600">
+              <div className="flex flex-col md:flex-row items-center gap-6">
                 <p>© {new Date().getFullYear()} {settings?.site_name || BRAND_CONFIG.name}. All rights reserved.</p>
                 {visitorCount !== null && (
-                  <span className="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-[11px] font-medium tracking-widest uppercase text-white/60">
+                  <span className="bg-white/5 border border-white/10 px-4 py-2 rounded-full text-[10px] text-gray-400 tracking-[0.2em] shadow-inner">
                      Visitors: {visitorCount}
                   </span>
                 )}
               </div>
-              <div className="flex gap-6">
-                <Link to="/privacy" className="hover:text-white/70 transition-colors">Privacy Policy</Link>
-                <Link to="/terms" className="hover:text-white/70 transition-colors">Terms of Service</Link>
-                <Link to="/sitemap" className="hover:text-white/70 transition-colors">Sitemap</Link>
+              <div className="flex flex-wrap justify-center gap-6 md:gap-8">
+                <Link to="/privacy" className="hover:text-rose-300 transition-colors">Privacy Policy</Link>
+                <Link to="/terms" className="hover:text-rose-300 transition-colors">Terms of Service</Link>
+                <Link to="/sitemap" className="hover:text-rose-300 transition-colors">Sitemap</Link>
               </div>
             </div>
           </div>

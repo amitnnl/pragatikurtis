@@ -11,18 +11,18 @@ import { useSettings } from '../context/SettingsContext';
 const AccordionItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="border-b border-muted/10 py-5">
-      <button className="w-full flex justify-between items-center text-left gap-4" onClick={() => setIsOpen(!isOpen)}>
-        <span className="text-base font-medium text-text-700">{question}</span>
-        <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.25 }} className="shrink-0">
-          <ChevronDown className="w-5 h-5 text-muted/50" />
+    <div className="border-b border-gray-100 py-5">
+      <button className="w-full flex justify-between items-center text-left gap-4 group" onClick={() => setIsOpen(!isOpen)}>
+        <span className="text-base font-medium text-gray-800 group-hover:text-rose-600 transition-colors">{question}</span>
+        <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.25 }} className="shrink-0 bg-rose-50 p-1.5 rounded-full">
+          <ChevronDown className="w-4 h-4 text-rose-500" />
         </motion.div>
       </button>
       <AnimatePresence>
         {isOpen && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden">
-            <p className="mt-4 text-muted/70 font-light leading-relaxed pr-8">{answer}</p>
+            <p className="mt-4 text-gray-600 font-light leading-relaxed pr-8">{answer}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -38,8 +38,8 @@ const faqs = [
 ];
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  visible: (i = 0) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.55, ease: [0.22, 0.61, 0.36, 1] } }),
+  hidden: { opacity: 0, y: 30 },
+  visible: (i = 0) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.6, ease: "easeOut" } }),
 };
 
 export default function Contact() {
@@ -81,39 +81,49 @@ export default function Contact() {
   ];
 
   return (
-    <div className="bg-surface">
-      <SEO title="Contact Us" description="Get in touch with Pragati Kurtis. We're here to help with your orders, inquiries, or just to say hello." />
+    <div className="bg-[#faf9f6] min-h-screen">
+      <SEO title="Contact Us | Pragati Kurties" description="Get in touch with Pragati Kurties. We're here to help with your orders, inquiries, or just to say hello." />
 
       {/* ── Page Hero Header ── */}
-      <div className="pt-32 pb-16 bg-primary relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5"
-          style={{ backgroundImage: 'repeating-linear-gradient(45deg, white 0, white 1px, transparent 0, transparent 50%)', backgroundSize: '12px 12px' }} />
-        <div className="relative container mx-auto px-6 text-center">
-          <motion.div initial="hidden" animate="visible">
-            <motion.p variants={fadeUp} custom={0} className="text-accent text-xs font-semibold tracking-[0.2em] uppercase mb-3">Get In Touch</motion.p>
-            <motion.h1 variants={fadeUp} custom={1} className="text-4xl md:text-5xl font-serif font-light text-white">Contact Us</motion.h1>
-            <motion.p variants={fadeUp} custom={2} className="text-white/40 mt-3 font-light max-w-xl mx-auto">
-              We'd love to hear from you. Whether you have a question about an order or just want to say hello.
-            </motion.p>
-          </motion.div>
-        </div>
-      </div>
+      <motion.section 
+        className="relative pt-40 pb-20 md:pt-48 md:pb-32 bg-[#faf9f6] flex items-center justify-center overflow-hidden border-b border-gray-100"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.2 }}
+      >
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-rose-50 rounded-full mix-blend-multiply filter blur-3xl opacity-60 transform translate-x-1/3 -translate-y-1/3"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-amber-50 rounded-full mix-blend-multiply filter blur-3xl opacity-60 transform -translate-x-1/2 translate-y-1/2"></div>
+        <motion.div 
+          className="relative z-10 text-center px-4 max-w-3xl"
+          initial={{ y: 30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4, duration: 1, ease: "easeOut" }}
+        >
+          <span className="block text-sm md:text-md uppercase tracking-[0.3em] mb-6 text-rose-400 font-semibold">Get In Touch</span>
+          <h1 className="text-5xl md:text-7xl font-serif text-gray-900 tracking-tight uppercase">
+            Contact Us
+          </h1>
+          <p className="mt-8 text-lg md:text-xl font-light tracking-wide text-gray-500 leading-relaxed">
+            We'd love to hear from you. Whether you have a question about an order, sizing, or just want to say hello.
+          </p>
+        </motion.div>
+      </motion.section>
 
       {/* ── Contact Cards ── */}
-      <div className="container mx-auto px-6 -mt-8 relative z-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="container mx-auto px-6 relative z-20 -mt-16 sm:-mt-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {contactItems.map(({ icon: Icon, label, value, href }, i) => (
             <motion.div key={label} variants={fadeUp} initial="hidden" animate="visible" custom={i}
-              className="bg-surface rounded-2xl p-5 shadow-lg border border-muted/8 flex flex-col gap-3">
-              <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
-                <Icon size={18} className="text-accent" />
+              className="bg-white rounded-2xl p-6 shadow-xl shadow-rose-900/5 border border-rose-50 flex flex-col items-center text-center group hover:-translate-y-2 transition-all duration-300">
+              <div className="w-14 h-14 rounded-full bg-rose-50 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Icon size={24} className="text-rose-500" />
               </div>
               <div>
-                <p className="text-xs font-bold text-muted/50 uppercase tracking-widest mb-1">{label}</p>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">{label}</p>
                 {href ? (
-                  <a href={href} className="text-sm text-text-700 font-medium hover:text-accent transition-colors leading-snug">{value}</a>
+                  <a href={href} className="text-sm text-gray-800 font-medium hover:text-rose-500 transition-colors cursor-pointer">{value}</a>
                 ) : (
-                  <p className="text-sm text-text-700 font-medium leading-snug">{value}</p>
+                  <p className="text-sm text-gray-800 font-medium">{value}</p>
                 )}
               </div>
             </motion.div>
@@ -122,19 +132,22 @@ export default function Contact() {
       </div>
 
       {/* ── Main Content ── */}
-      <div className="container mx-auto px-6 py-16 md:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 max-w-6xl mx-auto">
+      <div className="container mx-auto px-6 py-24 relative overflow-hidden">
+        <div className="absolute top-20 right-10 w-72 h-72 bg-amber-50 rounded-full mix-blend-multiply filter blur-3xl opacity-60"></div>
+        <div className="absolute bottom-10 left-10 w-96 h-96 bg-rose-50 rounded-full mix-blend-multiply filter blur-3xl opacity-60"></div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-16 max-w-6xl mx-auto relative z-10">
 
           {/* Left — Info + WhatsApp */}
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
-            className="lg:col-span-2 space-y-8">
+            className="lg:col-span-2 space-y-12">
             <div>
-              <p className="text-accent text-xs font-semibold tracking-[0.2em] uppercase mb-3">Connect With Us</p>
-              <h2 className="text-3xl font-serif font-light text-text-700 leading-snug">
+              <h2 className="text-sm font-semibold tracking-widest text-amber-600 uppercase mb-3">Connect With Us</h2>
+              <h3 className="text-4xl md:text-5xl font-serif text-gray-900 leading-tight mb-6">
                 We're Here<br />to Help You
-              </h2>
-              <p className="text-muted/60 font-light mt-4 leading-relaxed">
-                Have a question about your order, sizing, or our collection? Reach out anytime — we usually respond within a few hours.
+              </h3>
+              <p className="text-gray-600 text-lg font-light leading-relaxed">
+                Have a question about your order, sizing, or our collection? Reach out anytime — we usually respond within a few hours. Your satisfaction is our priority.
               </p>
             </div>
 
@@ -143,26 +156,30 @@ export default function Contact() {
               <a
                 href={`https://wa.me/${(settings?.contact_whatsapp || BRAND_CONFIG.contact.whatsapp).replace(/[^0-9]/g, '')}`}
                 target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-4 p-5 rounded-2xl bg-green-50 border border-green-100 hover:bg-green-100 transition-colors group"
+                className="flex items-center gap-5 p-6 rounded-2xl bg-white shadow-lg border border-emerald-50 hover:border-emerald-100 hover:shadow-xl transition-all group hover:-translate-y-1"
               >
-                <div className="w-12 h-12 rounded-xl bg-green-500 flex items-center justify-center shrink-0">
-                  <FaWhatsapp className="w-6 h-6 text-white" />
+                <div className="w-14 h-14 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 shadow-md group-hover:scale-105 transition-transform">
+                  <FaWhatsapp className="w-7 h-7 text-white" />
                 </div>
                 <div>
-                  <p className="font-semibold text-green-800">Chat on WhatsApp</p>
-                  <p className="text-xs text-green-600 font-light">Quick replies • Usually within minutes</p>
+                  <p className="font-serif text-xl text-gray-900 mb-1">Chat on WhatsApp</p>
+                  <p className="text-sm text-emerald-600 font-light">Quick replies within minutes</p>
                 </div>
-                <div className="ml-auto text-green-400 group-hover:translate-x-1 transition-transform">→</div>
+                <div className="ml-auto text-emerald-500 group-hover:translate-x-2 transition-transform">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
               </a>
             )}
 
             {/* FAQ Teaser */}
-            <div className="bg-surface-100 rounded-2xl p-6 border border-muted/8">
-              <div className="flex items-center gap-3 mb-4">
-                <MessageSquare size={18} className="text-accent" />
-                <p className="font-semibold text-text-700">Common Questions</p>
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center">
+                  <MessageSquare size={18} className="text-rose-500" />
+                </div>
+                <p className="font-serif text-2xl text-gray-900">Common Questions</p>
               </div>
-              <div className="divide-y divide-muted/10">
+              <div className="divide-y divide-gray-100">
                 {faqs.slice(0, 3).map((faq, i) => (
                   <AccordionItem key={i} question={faq.question} answer={faq.answer} />
                 ))}
@@ -173,61 +190,63 @@ export default function Contact() {
           {/* Right — Contact Form */}
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={1}
             className="lg:col-span-3">
-            <div className="bg-surface rounded-2xl p-8 md:p-10 shadow-sm border border-muted/8">
+             <div className="bg-white rounded-[2rem] p-8 md:p-12 shadow-2xl border border-rose-50/50 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-40 h-40 bg-amber-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 transform translate-x-1/2 -translate-y-1/2"></div>
+                
               {success ? (
-                <div className="text-center py-16">
-                  <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-                    <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-5">
-                      <CheckCircle className="w-10 h-10 text-green-500" />
+                <div className="text-center py-20 relative z-10">
+                  <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }}>
+                    <div className="w-24 h-24 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-6 shadow-inner">
+                      <CheckCircle className="w-12 h-12 text-emerald-500" />
                     </div>
                   </motion.div>
-                  <h3 className="text-2xl font-serif text-text-700 mb-2">Message Sent!</h3>
-                  <p className="text-muted/60 font-light">{success}</p>
-                  <button onClick={() => setSuccess(null)} className="mt-8 text-accent font-semibold hover:text-accent-dark text-sm transition-colors">
-                    Send another message →
+                  <h3 className="text-4xl font-serif text-gray-900 mb-4">Message Sent!</h3>
+                  <p className="text-gray-600 text-lg font-light mb-10">{success}</p>
+                  <button onClick={() => setSuccess(null)} className="text-rose-500 font-semibold hover:text-rose-600 text-sm tracking-widest uppercase transition-colors flex items-center justify-center gap-2 mx-auto">
+                    Send Another Message <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <div className="mb-6">
-                    <p className="text-accent text-xs font-semibold tracking-[0.2em] uppercase mb-2">Message Us</p>
-                    <h2 className="text-2xl font-serif font-light text-text-700">Send a Message</h2>
+                <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+                  <div className="mb-8">
+                    <p className="text-sm font-semibold tracking-widest text-amber-600 uppercase mb-2">Inquiries</p>
+                    <h2 className="text-4xl font-serif text-gray-900">Send a Message</h2>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
-                      <label className="text-xs font-semibold text-muted/60 uppercase tracking-wider mb-1.5 block">First Name</label>
+                      <label className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2 block">First Name</label>
                       <input type="text" name="first_name" required placeholder="Priya"
-                        className="input-field" value={formData.first_name} onChange={handleChange} />
+                        className="w-full bg-[#faf9f6] border-none rounded-xl px-4 py-3.5 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-rose-200 focus:bg-white transition-all shadow-inner outline-none" value={formData.first_name} onChange={handleChange} />
                     </div>
                     <div>
-                      <label className="text-xs font-semibold text-muted/60 uppercase tracking-wider mb-1.5 block">Last Name</label>
+                      <label className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2 block">Last Name</label>
                       <input type="text" name="last_name" required placeholder="Sharma"
-                        className="input-field" value={formData.last_name} onChange={handleChange} />
+                        className="w-full bg-[#faf9f6] border-none rounded-xl px-4 py-3.5 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-rose-200 focus:bg-white transition-all shadow-inner outline-none" value={formData.last_name} onChange={handleChange} />
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-xs font-semibold text-muted/60 uppercase tracking-wider mb-1.5 block">Email Address</label>
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2 block">Email Address</label>
                     <input type="email" name="email" required placeholder="you@example.com"
-                      className="input-field" value={formData.email} onChange={handleChange} />
+                      className="w-full bg-[#faf9f6] border-none rounded-xl px-4 py-3.5 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-rose-200 focus:bg-white transition-all shadow-inner outline-none" value={formData.email} onChange={handleChange} />
                   </div>
 
                   <div>
-                    <label className="text-xs font-semibold text-muted/60 uppercase tracking-wider mb-1.5 block">Phone Number</label>
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2 block">Phone Number</label>
                     <input type="tel" name="phone" required placeholder="+91 98765 43210"
-                      className="input-field" value={formData.phone} onChange={handleChange} />
+                      className="w-full bg-[#faf9f6] border-none rounded-xl px-4 py-3.5 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-rose-200 focus:bg-white transition-all shadow-inner outline-none" value={formData.phone} onChange={handleChange} />
                   </div>
 
                   <div>
-                    <label className="text-xs font-semibold text-muted/60 uppercase tracking-wider mb-1.5 block">Your Message</label>
-                    <textarea name="message" required rows={5} placeholder="Tell us how we can help you…"
-                      className="input-field resize-none" value={formData.message} onChange={handleChange} />
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2 block">Your Message</label>
+                    <textarea name="message" required rows={4} placeholder="Tell us how we can help you…"
+                      className="w-full bg-[#faf9f6] border-none rounded-xl px-4 py-3.5 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-rose-200 focus:bg-white transition-all shadow-inner resize-none outline-none" value={formData.message} onChange={handleChange} />
                   </div>
 
                   <button type="submit" disabled={submitting}
-                    className="w-full btn-primary justify-center gap-2 disabled:opacity-60 disabled:translate-y-0 disabled:shadow-none">
-                    {submitting ? 'Sending…' : 'Send Message'} <Send size={15} />
+                    className="w-full bg-gray-900 hover:bg-rose-900 text-white font-medium rounded-xl px-6 py-4 transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed shadow-xl shadow-gray-900/10 mt-4">
+                    {submitting ? 'Sending…' : 'Send Message'} <Send size={18} />
                   </button>
                 </form>
               )}
@@ -237,14 +256,24 @@ export default function Contact() {
       </div>
 
       {/* ── Map ── */}
-      <div className="container mx-auto px-6 pb-20">
+      <motion.div 
+        className="container mx-auto px-6 pb-24"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.8 }}
+      >
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl font-serif font-light text-text-700 mb-6 text-center">Find Us Here</h2>
-          <div className="rounded-2xl overflow-hidden shadow-lg border border-muted/8" style={{ height: '400px' }}>
+          <div className="text-center mb-10">
+            <h2 className="text-sm font-semibold tracking-widest text-amber-600 uppercase mb-3">Visit Us</h2>
+            <h3 className="text-4xl md:text-5xl font-serif text-gray-900">Find Our Boutique</h3>
+          </div>
+          <div className="rounded-[2rem] overflow-hidden shadow-2xl border border-gray-100 relative group" style={{ height: '450px' }}>
+            <div className="absolute inset-0 bg-gray-900/5 group-hover:bg-transparent transition-colors z-10 pointer-events-none"></div>
             <LocationMap />
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
