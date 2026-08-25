@@ -895,6 +895,11 @@ export default function Admin({ products, refreshProducts }) {
       { id: 'settings', icon: Settings, label: 'Settings' },
   ];
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  };
+
   return (
     <div className="flex h-screen bg-surface font-sans text-text-700">
       <AnimatePresence>
@@ -941,6 +946,9 @@ export default function Admin({ products, refreshProducts }) {
           <div className="flex items-center gap-3">
             <span className="text-xs text-muted/50 hidden sm:block">Admin Panel</span>
             <div className="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center font-bold text-sm shadow-md">A</div>
+            <button onClick={handleLogout} className="ml-2 p-2 text-danger hover:bg-danger-soft hover:text-red-700 rounded-full transition-colors" title="Log Out">
+              <LogOut size={18} />
+            </button>
           </div>
         </header>
 
