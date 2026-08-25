@@ -2,11 +2,11 @@
 // backend/config/app.php
 
 // Define the environment
-define('APP_ENV', 'development'); // Change to 'production' on deployment
+define('APP_ENV', $_ENV['APP_ENV'] ?? $_SERVER['APP_ENV'] ?? getenv('APP_ENV') ?: 'development');
 
 // Define frontend URL for emails and redirects
 if (APP_ENV === 'production') {
-    define('FRONTEND_URL', 'https://your-production-domain.com'); // UPDATE THIS
+    define('FRONTEND_URL', 'https://pragatikurtis.com');
 } else {
     define('FRONTEND_URL', 'http://localhost:5173');
 }

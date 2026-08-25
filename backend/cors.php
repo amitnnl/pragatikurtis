@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
+$dotenv->safeLoad();
 
 
 
@@ -14,7 +14,8 @@ $dotenv->load();
 $allowed_origins = [
     'http://localhost:5173', // Vite default dev server
     'http://localhost:3000', // Common React dev server
-    'https://your-production-frontend-domain.com' // <<< IMPORTANT: Replace with your actual domain before deployment
+    'https://pragatikurtis.com',
+    'https://www.pragatikurtis.com'
 ];
 
 if (isset($_SERVER['HTTP_ORIGIN'])) {
