@@ -39,6 +39,10 @@ if ($method == 'GET') {
                 echo json_encode(["status" => "success", "message" => "User added successfully"]);
             }
         } else if ($data->action == 'update_user') {
+            if ($data->id == 1) {
+                echo json_encode(["status" => "error", "message" => "Cannot update primary admin account"]);
+                exit;
+            }
             // Update existing user
             $query = "UPDATE users SET name = ?, email = ?, phone = ?, role = ?, is_approved = ?, company_name = ?, gst_number = ? WHERE id = ?";
             $stmt = $db->prepare($query);
@@ -52,6 +56,10 @@ if ($method == 'GET') {
                 echo json_encode(["status" => "success", "message" => "User updated successfully"]);
             }
         } else if ($data->action == 'update_status') {
+            if ($data->id == 1) {
+                echo json_encode(["status" => "error", "message" => "Cannot modify primary admin account"]);
+                exit;
+            }
             // Approve/Disapprove user
             $query_user = "SELECT id, name, email, role, is_approved FROM users WHERE id = ?";
             $stmt_user = $db->prepare($query_user);
@@ -93,6 +101,10 @@ if ($method == 'GET') {
                 echo json_encode(["status" => "success", "message" => "User status updated"]);
             }
         } else if ($data->action == 'change_role') {
+            if ($data->id == 1) {
+                echo json_encode(["status" => "error", "message" => "Cannot modify primary admin account"]);
+                exit;
+            }
             // Change user role
             $query = "UPDATE users SET role = ? WHERE id = ?";
             $stmt = $db->prepare($query);
@@ -103,6 +115,10 @@ if ($method == 'GET') {
     }
 } else if ($method == 'DELETE') {
     if (isset($_GET['id'])) {
+        if ($_GET['id'] == 1) {
+            echo json_encode(["status" => "error", "message" => "Cannot delete primary admin account"]);
+            exit;
+        }
         $stmt = $db->prepare("DELETE FROM users WHERE id = ?");
         if ($stmt->execute([$_GET['id']])) {
             echo json_encode(["status" => "success"]);

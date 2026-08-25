@@ -2,7 +2,7 @@
 include_once '../cors.php';
 
 // Define the required role(s) for this endpoint
-$required_role = ['customer', 'admin', 'dealer'];
+$required_role = ['customer', 'admin', 'dealer', 'guest'];
 include_once '../config/auth_check.php';
 
 require_once '../vendor/autoload.php';

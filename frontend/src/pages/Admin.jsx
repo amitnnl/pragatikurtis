@@ -694,8 +694,12 @@ function UsersManager() {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
-                      <button onClick={() => { setUserToEdit(u); setFormVisible(true); }} className="p-2 text-accent hover:bg-accent-light rounded-lg transition"><Edit size={18} /></button>
-                      <button onClick={() => handleDeleteUser(u.id)} className="p-2 text-danger hover:bg-danger-soft rounded-lg transition"><Trash2 size={18}/></button>
+                      {u.id !== 1 && (
+                        <>
+                          <button onClick={() => { setUserToEdit(u); setFormVisible(true); }} className="p-2 text-accent hover:bg-accent-light rounded-lg transition"><Edit size={18} /></button>
+                          <button onClick={() => handleDeleteUser(u.id)} className="p-2 text-danger hover:bg-danger-soft rounded-lg transition"><Trash2 size={18}/></button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>

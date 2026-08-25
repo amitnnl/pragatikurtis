@@ -205,6 +205,42 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
         </div>
       </section>
 
+      {/* ── Social Media Widgets ── */}
+      <section className="py-24 bg-white relative">
+        <div className="container mx-auto max-w-7xl px-6">
+          <div className="text-center mb-16">
+            <p className="text-rose-500 text-xs font-semibold tracking-[0.3em] uppercase mb-4">Follow Our Journey</p>
+            <h2 className="text-4xl md:text-5xl font-serif text-gray-900">Get Inspired</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Instagram Feed */}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="bg-[#faf9f6] rounded-[2rem] p-8 border border-gray-100 shadow-sm text-center">
+              <h3 className="text-2xl font-serif text-gray-900 mb-6">Instagram</h3>
+              
+              {/* === ELFSIGHT INSTAGRAM WIDGET GOES HERE === */}
+              {/* To activate: Replace the dashed div below with your actual Elfsight <div class="elfsight-app-..."></div> code */}
+              <div className="border-2 border-dashed border-gray-300 rounded-xl p-12 bg-white text-gray-400">
+                <p className="font-semibold uppercase tracking-widest text-sm mb-2">Instagram Widget Area</p>
+                <p className="text-xs">Paste your Elfsight snippet here</p>
+              </div>
+            </motion.div>
+
+            {/* YouTube Feed */}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="bg-[#faf9f6] rounded-[2rem] p-8 border border-gray-100 shadow-sm text-center">
+              <h3 className="text-2xl font-serif text-gray-900 mb-6">YouTube</h3>
+              
+              {/* === ELFSIGHT YOUTUBE WIDGET GOES HERE === */}
+              {/* To activate: Replace the dashed div below with your actual Elfsight <div class="elfsight-app-..."></div> code */}
+              <div className="border-2 border-dashed border-gray-300 rounded-xl p-12 bg-white text-gray-400">
+                <p className="font-semibold uppercase tracking-widest text-sm mb-2">YouTube Widget Area</p>
+                <p className="text-xs">Paste your Elfsight snippet here</p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Newsletter Strip ── */}
       <section className="py-24 bg-[#faf9f6] relative overflow-hidden">
         <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-rose-100/60 rounded-full mix-blend-multiply filter blur-3xl transform translate-x-1/3 translate-y-1/3"></div>
@@ -217,12 +253,15 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
           >
             <h3 className="text-4xl md:text-5xl font-serif text-gray-900 mb-6">{settings?.newsletter_title || 'Join the Inner Circle'}</h3>
             <p className="text-gray-500 text-lg font-light mb-12 max-w-xl mx-auto leading-relaxed">{settings?.newsletter_subtitle || 'Subscribe to our newsletter for exclusive early access to collections and receive 10% off your first order.'}</p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
-              <input type="email" placeholder="Enter your email address" className="w-full bg-white border border-gray-100 rounded-full px-8 py-4 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-rose-200 outline-none shadow-sm transition-all" />
-              <button className="bg-gray-900 hover:bg-rose-900 text-white font-semibold uppercase tracking-widest text-sm rounded-full px-10 py-4 transition-colors duration-300 whitespace-nowrap shadow-xl">
+            <form className="flex flex-col gap-4 max-w-xl mx-auto" onSubmit={(e) => e.preventDefault()}>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <input type="email" required placeholder="Email address" className="w-full bg-white border border-gray-100 rounded-full px-8 py-4 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-rose-200 outline-none shadow-sm transition-all" />
+                <input type="tel" required placeholder="Contact number" className="w-full bg-white border border-gray-100 rounded-full px-8 py-4 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-rose-200 outline-none shadow-sm transition-all" />
+              </div>
+              <button type="submit" className="w-full bg-gray-900 hover:bg-rose-900 text-white font-semibold uppercase tracking-widest text-sm rounded-full px-10 py-4 transition-colors duration-300 shadow-xl">
                 Subscribe
               </button>
-            </div>
+            </form>
           </motion.div>
         </div>
       </section>

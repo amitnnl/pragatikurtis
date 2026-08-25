@@ -159,47 +159,7 @@ export default function Checkout({ cart, cartTotal, user, clearCart }) {
       }
   };
 
-  // 1. Gate: User must be logged in to checkout
-  if (!user) {
-    return (
-      <div className="bg-surface pt-28 pb-20 min-h-screen flex items-center justify-center">
-        <SEO title="Checkout" description="Complete your order at Pragati Kurtis." />
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center max-w-md mx-auto px-6"
-        >
-          <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
-            <LogIn className="text-accent" size={36} />
-          </div>
-          <h1 className="text-3xl font-serif text-text-700 mb-3">Login to Continue</h1>
-          <p className="text-muted/60 font-light mb-8">
-            Please sign in to your account to complete your purchase and track your orders.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              to={`/login?redirect=/checkout`}
-              className="btn-primary flex items-center gap-2 justify-center"
-            >
-              <LogIn size={16} /> Sign In
-            </Link>
-            <Link
-              to={`/register?redirect=/checkout`}
-              className="btn-outline flex items-center gap-2 justify-center"
-            >
-              <UserPlus size={16} /> Create Account
-            </Link>
-          </div>
-          <button
-            onClick={() => navigate(-1)}
-            className="mt-6 text-xs text-muted/40 hover:text-accent transition-colors uppercase tracking-widest font-bold"
-          >
-            ← Continue Shopping
-          </button>
-        </motion.div>
-      </div>
-    );
-  }
+  // Removed User Gate: Allowing Guest Checkout
 
   // 2. Gate: Cart must not be empty
   if (cart.length === 0 && step !== 3) {
@@ -262,6 +222,13 @@ export default function Checkout({ cart, cartTotal, user, clearCart }) {
                           </button>
                         </div>
                         
+                        {!user && (
+                          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4 flex items-center justify-between text-sm">
+                            <span className="text-amber-800 font-medium">Checking out as a Guest</span>
+                            <Link to={`/login?redirect=/checkout`} className="text-accent hover:underline font-bold">Log In</Link>
+                          </div>
+                        )}
+                        
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div className="space-y-1.5">
                             <label className="text-[10px] font-bold text-muted/50 uppercase tracking-widest ml-1">Full Name</label>
@@ -300,7 +267,7 @@ export default function Checkout({ cart, cartTotal, user, clearCart }) {
                            </div>
                         </div>
 
-                        <button onClick={() => setStep(2)} disabled={!shippingAddress.street || !shippingAddress.zip} className="w-full mt-4 btn-primary py-4 uppercase tracking-widest text-xs disabled:opacity-50 disabled:translate-y-0 disabled:shadow-none">
+                        <button onClick={() => setStep(2)} disabled={!shippingAddress.street || !shippingAddress.zip || !shippingAddress.name || !shippingAddress.phone} className="w-full mt-4 btn-primary py-4 uppercase tracking-widest text-xs disabled:opacity-50 disabled:translate-y-0 disabled:shadow-none">
                           Continue to Payment
                         </button>
                       </div>

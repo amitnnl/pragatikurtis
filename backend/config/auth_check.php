@@ -30,6 +30,10 @@ if (empty($authHeader)) {
 }
 
 if (empty($authHeader)) {
+    if (is_array($required_role) && in_array('guest', $required_role)) {
+        $GLOBALS['decoded_user'] = null;
+        return; // Allow guest access
+    }
     http_response_code(401);
     echo json_encode(["message" => "Access denied. No token provided."]);
     exit();
@@ -39,6 +43,10 @@ if (empty($authHeader)) {
 list($type, $jwt) = explode(' ', $authHeader, 2);
 
 if ($type !== 'Bearer' || empty($jwt)) {
+    if (is_array($required_role) && in_array('guest', $required_role)) {
+        $GLOBALS['decoded_user'] = null;
+        return; // Allow guest access
+    }
     http_response_code(401);
     echo json_encode(["message" => "Access denied. Invalid token format."]);
     exit();

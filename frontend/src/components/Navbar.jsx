@@ -1,4 +1,4 @@
-import { ShoppingBag, Search, Menu, User, X, Heart } from 'lucide-react'
+import { ShoppingBag, Search, Menu, User, X, Heart, Shield } from 'lucide-react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -101,9 +101,16 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
             </Link>
 
             {user ? (
-              <Link to="/profile" className="w-10 h-10 hidden sm:flex items-center justify-center rounded-full hover:bg-rose-50/50 hover:text-rose-600 transition-all duration-300 transform hover:scale-110">
-                <User size={20} />
-              </Link>
+              <>
+                {user.role === 'admin' && (
+                  <Link to="/admin" title="Admin Panel" className="w-10 h-10 hidden sm:flex items-center justify-center rounded-full hover:bg-rose-50/50 hover:text-rose-600 transition-all duration-300 transform hover:scale-110">
+                    <Shield size={20} />
+                  </Link>
+                )}
+                <Link to="/profile" title="Profile" className="w-10 h-10 hidden sm:flex items-center justify-center rounded-full hover:bg-rose-50/50 hover:text-rose-600 transition-all duration-300 transform hover:scale-110">
+                  <User size={20} />
+                </Link>
+              </>
             ) : (
               <Link to="/login" className={`hidden sm:flex text-xs font-bold uppercase tracking-widest px-6 py-2.5 rounded-full transition-all shadow-sm ${
                 isScrolled 
