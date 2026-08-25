@@ -122,7 +122,7 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
       </section>
 
       {/* ── Shop by Category ── */}
-      <section className="py-24 md:py-32 px-6 bg-[#faf9f6] relative overflow-hidden">
+      <section className="py-16 md:py-20 px-6 bg-[#faf9f6] relative overflow-hidden">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-rose-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 transform translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-amber-50 rounded-full mix-blend-multiply filter blur-3xl opacity-60 transform -translate-x-1/3 translate-y-1/3"></div>
         
@@ -155,7 +155,7 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
       </section>
 
       {/* ── Brand Banner ── */}
-      <section className="relative py-32 overflow-hidden bg-gray-950 text-white">
+      <section className="relative py-20 md:py-24 overflow-hidden bg-gray-950 text-white">
         <div className="absolute inset-0 w-full h-full opacity-40">
            <img src="/banners/Anarkali-Suit.jpeg" className="w-full h-full object-cover" alt="Brand background" />
            <div className="absolute inset-0 bg-gray-900/60 mix-blend-multiply" />
@@ -177,7 +177,7 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
       </section>
 
       {/* ── Trending Products ── */}
-      <section className="py-24 md:py-32 px-6 bg-white relative">
+      <section className="py-16 md:py-20 px-6 bg-white relative">
         <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-16 gap-6">
             <div>
@@ -206,7 +206,7 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
       </section>
 
       {/* ── Social Media Widgets ── */}
-      <section className="py-24 bg-white relative">
+      <section className="py-16 bg-white relative">
         <div className="container mx-auto max-w-7xl px-6">
           <div className="text-center mb-16">
             <p className="text-rose-500 text-xs font-semibold tracking-[0.3em] uppercase mb-4">Follow Our Journey</p>
@@ -242,7 +242,7 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
       </section>
 
       {/* ── Newsletter Strip ── */}
-      <section className="py-24 bg-[#faf9f6] relative overflow-hidden">
+      <section className="py-16 bg-[#faf9f6] relative overflow-hidden">
         <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-rose-100/60 rounded-full mix-blend-multiply filter blur-3xl transform translate-x-1/3 translate-y-1/3"></div>
         <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-amber-50/60 rounded-full mix-blend-multiply filter blur-3xl transform -translate-x-1/3 -translate-y-1/3"></div>
         
