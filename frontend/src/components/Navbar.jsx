@@ -52,7 +52,7 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
     <>
       <header className={`fixed top-0 inset-x-0 z-[100] transition-all duration-700 ${
         isScrolled
-          ? 'bg-white/85 backdrop-blur-2xl shadow-xl shadow-rose-900/5 py-4 border-b border-rose-50'
+          ? 'bg-white/85 backdrop-blur-2xl shadow-xl shadow-primary/10 py-4 border-b border-primary/10'
           : 'bg-transparent py-6 md:py-8'
       }`}>
         <div className="container mx-auto px-6 flex justify-between items-center relative">
@@ -75,12 +75,12 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
                 <Link key={link.name} to={link.path}
                   className={`text-[11px] font-bold uppercase tracking-[0.2em] transition-all duration-300 relative group px-2 py-1 ${
                     isActive(link.path) 
-                      ? (isScrolled ? 'text-rose-600' : 'text-rose-200')
+                      ? (isScrolled ? 'text-primary' : 'text-accent')
                       : (isScrolled ? 'text-gray-600 hover:text-gray-900' : 'text-white/80 hover:text-white')
                   }`}
                 >
                   {link.name}
-                  <span className={`absolute -bottom-1 left-1/2 -translate-x-1/2 h-0.5 bg-rose-500 rounded-full transition-all duration-300 ${isActive(link.path) ? 'w-full' : 'w-0 group-hover:w-full opacity-50'}`} />
+                  <span className={`absolute -bottom-1 left-1/2 -translate-x-1/2 h-0.5 bg-primary rounded-full transition-all duration-300 ${isActive(link.path) ? 'w-full' : 'w-0 group-hover:w-full opacity-50'}`} />
                 </Link>
               ))}
             </div>
@@ -89,25 +89,25 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
           {/* Right — Actions */}
           <div className={`flex items-center gap-2 md:gap-4 z-10 ${isScrolled ? 'text-gray-700' : 'text-white'}`}>
             <button onClick={() => setShowSearch(true)}
-              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-rose-50/50 hover:text-rose-600 transition-all duration-300 transform hover:scale-110">
+              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary/10/50 hover:text-primary transition-all duration-300 transform hover:scale-110">
               <Search size={20} />
             </button>
 
-            <Link to="/wishlist" className="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-rose-50/50 hover:text-rose-600 transition-all duration-300 transform hover:scale-110">
+            <Link to="/wishlist" className="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary/10/50 hover:text-primary transition-all duration-300 transform hover:scale-110">
               <Heart size={20} />
               {wishlistCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white shadow-sm" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full ring-2 ring-white shadow-sm" />
               )}
             </Link>
 
             {user ? (
               <>
                 {user.role === 'admin' && (
-                  <Link to="/admin" title="Admin Panel" className="w-10 h-10 hidden sm:flex items-center justify-center rounded-full hover:bg-rose-50/50 hover:text-rose-600 transition-all duration-300 transform hover:scale-110">
+                  <Link to="/admin" title="Admin Panel" className="w-10 h-10 hidden sm:flex items-center justify-center rounded-full hover:bg-primary/10/50 hover:text-primary transition-all duration-300 transform hover:scale-110">
                     <Shield size={20} />
                   </Link>
                 )}
-                <Link to="/profile" title="Profile" className="w-10 h-10 hidden sm:flex items-center justify-center rounded-full hover:bg-rose-50/50 hover:text-rose-600 transition-all duration-300 transform hover:scale-110">
+                <Link to="/profile" title="Profile" className="w-10 h-10 hidden sm:flex items-center justify-center rounded-full hover:bg-primary/10/50 hover:text-primary transition-all duration-300 transform hover:scale-110">
                   <User size={20} />
                 </Link>
               </>
@@ -122,7 +122,7 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
             )}
 
             <button onClick={onCartOpen}
-              className="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-rose-50/50 hover:text-rose-600 transition-all duration-300 transform hover:scale-110">
+              className="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary/10/50 hover:text-primary transition-all duration-300 transform hover:scale-110">
               <ShoppingBag size={20} />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center rounded-full bg-gray-900 text-[10px] font-bold text-white shadow-lg ring-2 ring-white">
@@ -142,10 +142,10 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-[#faf9f6]/95 z-[200] backdrop-blur-2xl flex flex-col"
+            className="fixed inset-0 bg-surface/95 z-[200] backdrop-blur-2xl flex flex-col"
           >
             <div className="container mx-auto px-6 pt-10 flex justify-between items-center relative z-10">
-              <p className="text-xs text-rose-400 uppercase tracking-[0.3em] font-semibold">Search Collection</p>
+              <p className="text-xs text-accent uppercase tracking-[0.3em] font-semibold">Search Collection</p>
               <button onClick={() => { setShowSearch(false); setSearchQuery(''); }}
                 className="w-12 h-12 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center transition-all group hover:scale-105">
                 <X size={22} className="text-gray-900 group-hover:rotate-90 transition-transform duration-500" />
@@ -157,7 +157,7 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
                 <input
                   autoFocus
                   placeholder="Discover elegance…"
-                  className="w-full text-4xl md:text-6xl font-serif text-center bg-transparent border-b-2 border-gray-200 focus:border-rose-300 pb-6 outline-none text-gray-900 placeholder:text-gray-300 transition-colors"
+                  className="w-full text-4xl md:text-6xl font-serif text-center bg-transparent border-b-2 border-gray-200 focus:border-accent pb-6 outline-none text-gray-900 placeholder:text-gray-300 transition-colors"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -169,15 +169,15 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
                         <Link to={`/product/${p.id}`}
                           onClick={() => { setShowSearch(false); setSearchQuery(''); }}
                           className="group bg-white p-4 rounded-3xl border border-gray-50 flex gap-6 items-center shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                          <div className="w-20 h-24 aspect-[3/4] overflow-hidden rounded-2xl bg-[#faf9f6] shrink-0 relative">
+                          <div className="w-20 h-24 aspect-[3/4] overflow-hidden rounded-2xl bg-surface shrink-0 relative">
                             <img src={p.image} className="w-full h-full object-cover object-top hover:scale-110 transition-transform duration-700" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-[10px] text-rose-500 font-bold tracking-[0.2em] uppercase mb-1.5">{p.category}</p>
-                            <h4 className="font-serif text-xl md:text-2xl text-gray-900 group-hover:text-rose-700 transition-colors truncate">{p.name}</h4>
+                            <p className="text-[10px] text-primary font-bold tracking-[0.2em] uppercase mb-1.5">{p.category}</p>
+                            <h4 className="font-serif text-xl md:text-2xl text-gray-900 group-hover:text-primary transition-colors truncate">{p.name}</h4>
                             <p className="text-gray-500 font-medium tracking-wide mt-1">₹{p.price}</p>
                           </div>
-                          <div className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-gray-400 group-hover:bg-rose-50 group-hover:text-rose-600 group-hover:border-rose-100 transition-all shrink-0 md:mr-4">
+                          <div className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-gray-400 group-hover:bg-primary/10 group-hover:text-primary group-hover:border-primary/20 transition-all shrink-0 md:mr-4">
                             →
                           </div>
                         </Link>
@@ -207,7 +207,7 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
             <motion.div
               initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
               transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-              className="fixed top-0 bottom-0 left-0 w-[85%] max-w-sm z-[150] bg-[#faf9f6] flex flex-col md:hidden shadow-2xl border-r border-rose-50"
+              className="fixed top-0 bottom-0 left-0 w-[85%] max-w-sm z-[150] bg-surface flex flex-col md:hidden shadow-2xl border-r border-primary/10"
             >
               <div className="p-8 flex justify-between items-center border-b border-gray-100">
                 <span className="font-serif text-2xl text-gray-900 tracking-widest">{settings?.site_short_name || BRAND_CONFIG.shortName}</span>
@@ -225,7 +225,7 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
                       className="group flex items-center border-b border-gray-100 pb-4"
                     >
                       <span className={`text-4xl font-serif transition-colors ${
-                        isActive(link.path) ? 'text-rose-600' : 'text-gray-800 group-hover:text-rose-500'
+                        isActive(link.path) ? 'text-primary' : 'text-gray-800 group-hover:text-primary'
                       }`}>
                         {link.name}
                       </span>
@@ -238,8 +238,8 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
                 {user ? (
                   <div className="space-y-4">
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center">
-                        <User size={20} className="text-rose-600" />
+                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                        <User size={20} className="text-primary" />
                       </div>
                       <div>
                         <p className="text-xs font-semibold text-gray-400 tracking-widest uppercase">Logged in as</p>
@@ -256,7 +256,7 @@ export default function Navbar({ cartCount, wishlistCount, onCartOpen, user, set
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <Link to="/login" className="block w-full text-center bg-gray-900 hover:bg-rose-900 text-white font-bold uppercase tracking-widest text-xs py-4 rounded-full shadow-lg transition-colors">
+                    <Link to="/login" className="block w-full text-center bg-gray-900 hover:bg-primary-dark text-white font-bold uppercase tracking-widest text-xs py-4 rounded-full shadow-lg transition-colors">
                       Sign In
                     </Link>
                     <Link to="/register" className="block w-full text-center bg-white border border-gray-200 text-gray-900 hover:border-gray-900 font-bold uppercase tracking-widest text-xs py-4 rounded-full transition-colors">

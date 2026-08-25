@@ -41,7 +41,7 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
   const trendingProducts = products.slice(0, 8);
 
   return (
-    <div className="bg-[#faf9f6] font-sans overflow-x-hidden">
+    <div className="bg-surface font-sans overflow-x-hidden">
       <SEO title="Boutique Ethnic Wear | Pragati Kurties" description="Premium handcrafted Kurtis, Suit Sets, and Designer Sarees. Shop Pragati Kurtis online." />
 
       {/* ── Hero Slider ── */}
@@ -69,14 +69,14 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
                 initial="hidden" animate="visible"
                 className="max-w-4xl mx-auto space-y-6 flex flex-col items-center"
               >
-                <motion.span variants={fadeUp} custom={0} className="text-rose-200 font-semibold text-xs md:text-sm tracking-[0.4em] uppercase drop-shadow-md">
+                <motion.span variants={fadeUp} custom={0} className="text-accent font-semibold text-xs md:text-sm tracking-[0.4em] uppercase drop-shadow-md">
                   {banners[currentSlide].subtitle || 'Exclusive Collection'}
                 </motion.span>
                 <motion.h1 variants={fadeUp} custom={1} className="text-5xl sm:text-6xl md:text-8xl font-serif font-light text-white leading-[1.1] drop-shadow-2xl">
                   {banners[currentSlide].title}
                 </motion.h1>
                 <motion.div variants={fadeUp} custom={2} className="flex gap-6 pt-8 justify-center items-center">
-                  <Link to="/shop" className="bg-white text-gray-900 hover:bg-rose-50 px-8 py-4 rounded-full tracking-widest uppercase text-sm font-semibold transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1">
+                  <Link to="/shop" className="bg-white text-gray-900 hover:bg-primary/10 px-8 py-4 rounded-full tracking-widest uppercase text-sm font-semibold transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1">
                     Explore Collection
                   </Link>
                 </motion.div>
@@ -108,8 +108,8 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:divide-x divide-gray-100">
             {perks.map(({ icon: Icon, title, desc }) => (
               <div key={title} className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-4 md:px-6">
-                <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center shrink-0">
-                  <Icon size={20} className="text-rose-600" />
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <Icon size={20} className="text-primary" />
                 </div>
                 <div>
                   <p className="font-serif font-semibold text-gray-900 text-lg mb-1">{title}</p>
@@ -122,13 +122,13 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
       </section>
 
       {/* ── Shop by Category ── */}
-      <section className="py-16 md:py-20 px-6 bg-[#faf9f6] relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-rose-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 transform translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-amber-50 rounded-full mix-blend-multiply filter blur-3xl opacity-60 transform -translate-x-1/3 translate-y-1/3"></div>
+      <section className="py-16 md:py-20 px-6 bg-surface relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 transform translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-accent/10 rounded-full mix-blend-multiply filter blur-3xl opacity-60 transform -translate-x-1/3 translate-y-1/3"></div>
         
         <div className="container mx-auto max-w-7xl relative z-10">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-16">
-            <motion.p variants={fadeUp} custom={0} className="text-amber-600 text-xs font-semibold tracking-[0.3em] uppercase mb-4">Curations</motion.p>
+            <motion.p variants={fadeUp} custom={0} className="text-accent text-xs font-semibold tracking-[0.3em] uppercase mb-4">Curations</motion.p>
             <motion.h2 variants={fadeUp} custom={1} className="text-4xl md:text-5xl font-serif text-gray-900 mb-6">Shop by Category</motion.h2>
             <motion.p variants={fadeUp} custom={2} className="text-gray-500 text-lg font-light max-w-2xl mx-auto">Discover our handcrafted collections of ethnic wear specifically designed for the absolute modern woman.</motion.p>
           </motion.div>
@@ -137,13 +137,13 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
             {categories.map((cat, i) => (
               <motion.div key={cat.name} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUp} custom={i * 0.1}>
                 <Link to={`/shop?category=${encodeURIComponent(cat.slug)}`}
-                  className="group relative block aspect-[3/4] overflow-hidden rounded-[2rem] shadow-xl shadow-rose-900/5 bg-white">
+                  className="group relative block aspect-[3/4] overflow-hidden rounded-[2rem] shadow-xl shadow-primary/10 bg-white">
                   <img src={cat.image_url || cat.image} alt={cat.name} loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
                   <div className="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
                     <h3 className="text-white font-serif text-2xl mb-2">{cat.name}</h3>
-                    <p className="text-rose-200 text-xs uppercase tracking-[0.2em] font-semibold flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                    <p className="text-accent text-xs uppercase tracking-[0.2em] font-semibold flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
                       Explore <ArrowRight size={14} />
                     </p>
                   </div>
@@ -162,7 +162,7 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
         </div>
         <div className="relative container mx-auto px-6 text-center space-y-8 max-w-4xl z-10">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
-            <motion.p variants={fadeUp} custom={0} className="text-rose-300 text-xs font-semibold tracking-[0.4em] uppercase mb-6">{settings?.home_philosophy_subtitle || 'Our Philosophy'}</motion.p>
+            <motion.p variants={fadeUp} custom={0} className="text-accent text-xs font-semibold tracking-[0.4em] uppercase mb-6">{settings?.home_philosophy_subtitle || 'Our Philosophy'}</motion.p>
             <motion.h2 variants={fadeUp} custom={1} className="text-5xl md:text-7xl font-serif font-light leading-[1.1] drop-shadow-2xl mb-8" dangerouslySetInnerHTML={{ __html: settings?.home_philosophy_title || 'Elegance in<br /><em>Every Thread</em>' }} />
             <motion.p variants={fadeUp} custom={2} className="text-gray-300 text-xl font-light leading-relaxed max-w-2xl mx-auto mb-10">
               {settings?.home_philosophy_text || 'We believe in the timeless beauty of tradition, woven with a touch of modern elegance. Our collections are crafted to celebrate you.'}
@@ -181,10 +181,10 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
         <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-16 gap-6">
             <div>
-              <p className="text-rose-500 text-xs font-semibold tracking-[0.3em] uppercase mb-4">Fresh Arrivals</p>
+              <p className="text-primary text-xs font-semibold tracking-[0.3em] uppercase mb-4">Fresh Arrivals</p>
               <h2 className="text-4xl md:text-6xl font-serif text-gray-900">Trending Now</h2>
             </div>
-            <Link to="/shop" className="group flex items-center gap-3 text-sm font-semibold uppercase tracking-widest text-gray-900 hover:text-rose-600 transition-colors pb-2">
+            <Link to="/shop" className="group flex items-center gap-3 text-sm font-semibold uppercase tracking-widest text-gray-900 hover:text-primary transition-colors pb-2">
               View Collection <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
             </Link>
           </div>
@@ -209,13 +209,13 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
       <section className="py-16 bg-white relative">
         <div className="container mx-auto max-w-7xl px-6">
           <div className="text-center mb-16">
-            <p className="text-rose-500 text-xs font-semibold tracking-[0.3em] uppercase mb-4">Follow Our Journey</p>
+            <p className="text-primary text-xs font-semibold tracking-[0.3em] uppercase mb-4">Follow Our Journey</p>
             <h2 className="text-4xl md:text-5xl font-serif text-gray-900">Get Inspired</h2>
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Instagram Feed */}
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="bg-[#faf9f6] rounded-[2rem] p-8 border border-gray-100 shadow-sm text-center">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="bg-surface rounded-[2rem] p-8 border border-gray-100 shadow-sm text-center">
               <h3 className="text-2xl font-serif text-gray-900 mb-6">Instagram</h3>
               
               {/* === ELFSIGHT INSTAGRAM WIDGET GOES HERE === */}
@@ -227,7 +227,7 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
             </motion.div>
 
             {/* YouTube Feed */}
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="bg-[#faf9f6] rounded-[2rem] p-8 border border-gray-100 shadow-sm text-center">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="bg-surface rounded-[2rem] p-8 border border-gray-100 shadow-sm text-center">
               <h3 className="text-2xl font-serif text-gray-900 mb-6">YouTube</h3>
               
               {/* === ELFSIGHT YOUTUBE WIDGET GOES HERE === */}
@@ -242,23 +242,23 @@ export default function Home({ products, onAddToCart, onToggleWishlist, wishlist
       </section>
 
       {/* ── Newsletter Strip ── */}
-      <section className="py-16 bg-[#faf9f6] relative overflow-hidden">
-        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-rose-100/60 rounded-full mix-blend-multiply filter blur-3xl transform translate-x-1/3 translate-y-1/3"></div>
-        <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-amber-50/60 rounded-full mix-blend-multiply filter blur-3xl transform -translate-x-1/3 -translate-y-1/3"></div>
+      <section className="py-16 bg-surface relative overflow-hidden">
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-primary/20/60 rounded-full mix-blend-multiply filter blur-3xl transform translate-x-1/3 translate-y-1/3"></div>
+        <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-accent/10/60 rounded-full mix-blend-multiply filter blur-3xl transform -translate-x-1/3 -translate-y-1/3"></div>
         
         <div className="container mx-auto px-6 relative z-10">
           <motion.div 
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-            className="max-w-4xl mx-auto bg-white/70 backdrop-blur-xl rounded-[3rem] shadow-2xl shadow-rose-900/5 p-10 md:p-20 text-center border border-white"
+            className="max-w-4xl mx-auto bg-white/70 backdrop-blur-xl rounded-[3rem] shadow-2xl shadow-primary/10 p-10 md:p-20 text-center border border-white"
           >
             <h3 className="text-4xl md:text-5xl font-serif text-gray-900 mb-6">{settings?.newsletter_title || 'Join the Inner Circle'}</h3>
             <p className="text-gray-500 text-lg font-light mb-12 max-w-xl mx-auto leading-relaxed">{settings?.newsletter_subtitle || 'Subscribe to our newsletter for exclusive early access to collections and receive 10% off your first order.'}</p>
             <form className="flex flex-col gap-4 max-w-xl mx-auto" onSubmit={(e) => e.preventDefault()}>
               <div className="flex flex-col sm:flex-row gap-4">
-                <input type="email" required placeholder="Email address" className="w-full bg-white border border-gray-100 rounded-full px-8 py-4 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-rose-200 outline-none shadow-sm transition-all" />
-                <input type="tel" required placeholder="Contact number" className="w-full bg-white border border-gray-100 rounded-full px-8 py-4 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-rose-200 outline-none shadow-sm transition-all" />
+                <input type="email" required placeholder="Email address" className="w-full bg-white border border-gray-100 rounded-full px-8 py-4 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-accent outline-none shadow-sm transition-all" />
+                <input type="tel" required placeholder="Contact number" className="w-full bg-white border border-gray-100 rounded-full px-8 py-4 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-accent outline-none shadow-sm transition-all" />
               </div>
-              <button type="submit" className="w-full bg-gray-900 hover:bg-rose-900 text-white font-semibold uppercase tracking-widest text-sm rounded-full px-10 py-4 transition-colors duration-300 shadow-xl">
+              <button type="submit" className="w-full bg-gray-900 hover:bg-primary-dark text-white font-semibold uppercase tracking-widest text-sm rounded-full px-10 py-4 transition-colors duration-300 shadow-xl">
                 Subscribe
               </button>
             </form>
