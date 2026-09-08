@@ -2,10 +2,11 @@ import { useState, useEffect, lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Navbar from './components/Navbar'
+import Footer from './components/Footer'
 import CartDrawer from './components/CartDrawer'
 import ScrollToTop from './components/ScrollToTop'
 import { ToastProvider, useToast } from './components/Toast'
-import SocialWidgets from './components/SocialWidgets'
+import WhatsAppButton from './components/WhatsAppButton'
 import AIChatWidget from './components/AIChatWidget'
 import CartRecovery from './components/CartRecovery'
 import { BRAND_CONFIG } from './config/branding'
@@ -100,7 +101,7 @@ function AppContent({
           <Route path="/profile" element={<Profile user={user} setUser={setUser} />} />
           <Route 
             path="/admin" 
-            element={user?.role === 'admin' ? <Admin products={products} refreshProducts={fetchProducts} /> : <Navigate to="/" />} 
+            element={user?.role === 'admin' ? <Admin products={products} refreshProducts={fetchProducts} setUser={setUser} /> : <Navigate to="/" />} 
           />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
@@ -113,11 +114,11 @@ function AppContent({
   );
 
   return (
-    <div className="min-h-screen bg-surface text-text">
+    <div className="min-h-screen bg-cream text-text-dark">
       <ScrollToTop />
       {!isPanelPage && (
         <>
-          <SocialWidgets />
+          <WhatsAppButton />
           {settings?.feature_whatsapp_bot !== '0' && <AIChatWidget />}
         </>
       )}
@@ -153,97 +154,7 @@ function AppContent({
       </div>
 
       {!isPanelPage && (
-        <footer className="bg-gray-950 text-white relative overflow-hidden">
-          {/* Subtle background glow */}
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-rose-500/10 rounded-full mix-blend-screen filter blur-[100px] pointer-events-none"></div>
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-amber-500/10 rounded-full mix-blend-screen filter blur-[100px] pointer-events-none"></div>
-
-          {/* Main Footer */}
-          <div className="container mx-auto px-6 pt-24 pb-12 relative z-10">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 pb-16 border-b border-white/10">
-              {/* Brand */}
-              <div className="md:col-span-4 flex flex-col items-start">
-                <h3 className="font-serif text-4xl md:text-5xl font-light mb-6 tracking-wide drop-shadow-sm">{settings?.site_short_name || BRAND_CONFIG.shortName}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed font-light max-w-sm mb-8">
-                  {settings?.site_description || BRAND_CONFIG.tagline}
-                </p>
-                <div className="flex gap-4">
-                  {[['F', BRAND_CONFIG.social.facebook], ['I', BRAND_CONFIG.social.instagram], ['Y', BRAND_CONFIG.social.youtube]].map(([l, href]) => (
-                    <a key={l} href={href} target="_blank" rel="noreferrer"
-                      className="w-12 h-12 rounded-full border border-gray-800 flex items-center justify-center text-gray-400 hover:bg-white hover:border-white hover:text-gray-900 font-serif text-lg transition-all duration-300 transform hover:-translate-y-1">
-                      {l}
-                    </a>
-                  ))}
-                </div>
-              </div>
-
-              {/* Shop Links */}
-              <div className="md:col-span-2 md:pt-4">
-                <p className="text-xs font-semibold tracking-[0.3em] uppercase text-rose-200 mb-8">Shop</p>
-                <ul className="space-y-4 text-sm">
-                  {[['All Collections', '/shop'], ['Elegant Kurtis', '/shop?category=Kurti'], ['Suit Sets', '/shop?category=Suit Set'], ['Luxury Gowns', '/shop?category=Gown/Dresses']].map(([name, path]) => (
-                    <li key={name}>
-                      <Link to={path} className="text-gray-400 hover:text-white transition-all duration-300 font-light inline-block relative group">
-                        {name}
-                        <span className="absolute -bottom-1 left-0 w-0 h-px bg-rose-300 transition-all duration-300 group-hover:w-full"></span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Company Links */}
-              <div className="md:col-span-2 md:pt-4">
-                <p className="text-xs font-semibold tracking-[0.3em] uppercase text-rose-200 mb-8">World Of Us</p>
-                <ul className="space-y-4 text-sm">
-                  {[['Our Story', '/about'], ['Contact Concierge', '/contact'], ['My Profile', '/profile'], ['Track Order', '/track-order']].map(([name, path]) => (
-                    <li key={name}>
-                      <Link to={path} className="text-gray-400 hover:text-white transition-all duration-300 font-light inline-block relative group">
-                        {name}
-                        <span className="absolute -bottom-1 left-0 w-0 h-px bg-rose-300 transition-all duration-300 group-hover:w-full"></span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Newsletter */}
-              <div className="md:col-span-4 md:pt-4">
-                <p className="text-xs font-semibold tracking-[0.3em] uppercase text-rose-200 mb-8">The Inner Circle</p>
-                <p className="text-gray-400 text-sm mb-6 font-light leading-relaxed max-w-sm">Subscribe to receive exclusive access to our newest collections and exclusive offers.</p>
-                <form onSubmit={handleFooterSubscribe} className="flex flex-col sm:flex-row gap-3">
-                  <input
-                    type="email" placeholder="Email Address"
-                    className="flex-1 bg-white/5 border border-white/10 px-6 py-4 text-sm text-white placeholder:text-gray-500 rounded-full focus:outline-none focus:border-rose-300/50 focus:bg-white/10 transition-all font-light"
-                    value={footerEmail}
-                    onChange={e => setFooterEmail(e.target.value)}
-                    required
-                  />
-                  <button type="submit" className="bg-white text-gray-900 px-8 py-4 rounded-full text-xs font-bold tracking-widest uppercase hover:bg-rose-50 hover:shadow-lg hover:shadow-white/10 transition-all duration-300 whitespace-nowrap">
-                    Join
-                  </button>
-                </form>
-              </div>
-            </div>
-
-            {/* Bottom Bar */}
-            <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-10 text-xs tracking-wider uppercase font-semibold text-gray-600">
-              <div className="flex flex-col md:flex-row items-center gap-6">
-                <p>© {new Date().getFullYear()} {settings?.site_name || BRAND_CONFIG.name}. All rights reserved.</p>
-                {visitorCount !== null && (
-                  <span className="bg-white/5 border border-white/10 px-4 py-2 rounded-full text-[10px] text-gray-400 tracking-[0.2em] shadow-inner">
-                     Visitors: {visitorCount}
-                  </span>
-                )}
-              </div>
-              <div className="flex flex-wrap justify-center gap-6 md:gap-8">
-                <Link to="/privacy" className="hover:text-rose-300 transition-colors">Privacy Policy</Link>
-                <Link to="/terms" className="hover:text-rose-300 transition-colors">Terms of Service</Link>
-                <Link to="/sitemap" className="hover:text-rose-300 transition-colors">Sitemap</Link>
-              </div>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       )}
     </div>
   )

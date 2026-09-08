@@ -88,7 +88,7 @@ export default function ForgotPassword() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-5 bg-accent text-surface rounded-2xl font-bold uppercase tracking-[0.2em] text-xs hover:bg-accent-dark transition-all duration-500 flex items-center justify-center gap-3 shadow-xl shadow-accent-light"
+                className="w-full py-4 bg-primary text-white rounded-xl font-semibold uppercase tracking-widest text-xs hover:bg-primary-dark transition-all duration-300 flex items-center justify-center gap-3 shadow-[0_12px_24px_rgba(128,27,52,0.35)] btn-3d-press"
               >
                 {loading ? 'Processing...' : 'Send Recovery Link'} <ArrowRight size={16}/>
               </button>

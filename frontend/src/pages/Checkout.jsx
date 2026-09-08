@@ -267,7 +267,7 @@ export default function Checkout({ cart, cartTotal, user, clearCart }) {
                            </div>
                         </div>
 
-                        <button onClick={() => setStep(2)} disabled={!shippingAddress.street || !shippingAddress.zip || !shippingAddress.name || !shippingAddress.phone} className="w-full mt-4 btn-primary py-4 uppercase tracking-widest text-xs disabled:opacity-50 disabled:translate-y-0 disabled:shadow-none">
+                        <button onClick={() => setStep(2)} disabled={!shippingAddress.street || !shippingAddress.zip || !shippingAddress.name || !shippingAddress.phone} className="w-full mt-4 btn-primary py-4 uppercase tracking-widest text-xs disabled:opacity-50 disabled:translate-y-0 disabled:shadow-none btn-3d-press shadow-[0_12px_24px_rgba(128,27,52,0.35)]">
                           Continue to Payment
                         </button>
                       </div>
@@ -276,24 +276,24 @@ export default function Checkout({ cart, cartTotal, user, clearCart }) {
 
                   {step === 2 && (
                     <motion.div key="payment" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                       <div className="bg-white rounded-2xl p-8 border border-muted/8 shadow-sm space-y-6">
+                       <div className="bg-white rounded-3xl p-8 border border-border-soft shadow-xl space-y-6 card-3d-lift">
                         <div className="flex items-center gap-3 mb-2">
-                          <div className="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center text-sm font-bold">2</div>
-                          <h3 className="text-xl font-serif text-text-700">Payment Option</h3>
+                          <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold shadow-sm">2</div>
+                          <h3 className="text-xl font-serif text-text-dark">Payment Option</h3>
                         </div>
 
-                        <button onClick={displayRazorpay} disabled={loading} className="w-full flex items-center justify-between p-6 bg-accent/5 border-2 border-accent rounded-2xl group transition-all">
+                        <button onClick={displayRazorpay} disabled={loading} className="w-full flex items-center justify-between p-6 bg-cream border-2 border-secondary/50 rounded-2xl group transition-all btn-3d-press hover:border-primary shadow-sm">
                            <div className="text-left">
-                             <p className="font-bold text-text-700">Secure Online Payment</p>
-                             <p className="text-xs text-muted/60 mt-1">Cards, UPI, Netbanking via Razorpay</p>
+                             <p className="font-bold text-text-dark">Secure Online Payment</p>
+                             <p className="text-xs text-text-muted mt-1">Cards, UPI, Netbanking via Razorpay</p>
                            </div>
-                           <div className="w-6 h-6 rounded-full border-2 border-accent bg-accent flex items-center justify-center text-white scale-110">
+                           <div className="w-6 h-6 rounded-full border-2 border-primary bg-primary flex items-center justify-center text-white scale-110 shadow-sm">
                              <div className="w-2 h-2 bg-white rounded-full"></div>
                            </div>
                         </button>
 
                         <div className="pt-4">
-                          <button onClick={() => setStep(1)} className="text-xs font-bold text-muted/40 hover:text-accent uppercase tracking-widest transition-colors">
+                          <button onClick={() => setStep(1)} className="text-xs font-bold text-text-muted hover:text-primary uppercase tracking-widest transition-colors btn-3d-press">
                             ← Back to Shipping
                           </button>
                         </div>
@@ -303,10 +303,10 @@ export default function Checkout({ cart, cartTotal, user, clearCart }) {
                 </AnimatePresence>
               </main>
 
-              {/* Order Summary */}
+              {/* Order Summary with 3D Depth */}
               <aside className="lg:col-span-5 space-y-6 lg:sticky lg:top-28">
-                <div className="bg-white rounded-2xl p-6 md:p-8 border border-muted/8 shadow-sm">
-                  <h3 className="text-lg font-serif text-text-700 border-b border-muted/10 pb-4 mb-6 uppercase tracking-wider text-xs font-bold">Your Order</h3>
+                <div className="bg-white rounded-3xl p-6 md:p-8 border border-border-soft shadow-xl card-3d-lift">
+                  <h3 className="text-lg font-serif text-text-dark border-b border-border-soft pb-4 mb-6 uppercase tracking-wider text-xs font-bold">Your Order</h3>
                   <div className="max-h-[320px] overflow-y-auto pr-2 space-y-4 mb-8 custom-scrollbar">
                     {cart.map(item => (
                       <div key={item.cartItemId} className="flex gap-4 items-center">

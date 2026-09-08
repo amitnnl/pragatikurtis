@@ -6,8 +6,23 @@ require_once '../config/database.php';
 $database = new Database();
 $db = $database->getConnection();
 
-// Handle GET requests (fetch reviews for a product)
+// Handle GET requests
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (isset($_GET['featured']) && $_GET['featured'] == '1') {
+        // Fetch 5-star approved reviews globally for landing page
+        $query = "SELECT r.*, u.name as user_name, p.name as product_name 
+                  FROM reviews r 
+                  LEFT JOIN users u ON r.user_id = u.id 
+                  LEFT JOIN products p ON r.product_id = p.id
+                  WHERE r.is_approved = 1 AND r.rating >= 4
+                  ORDER BY r.created_at DESC LIMIT 6";
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($reviews);
+        exit();
+    }
+
     if (!isset($_GET['product_id'])) {
         http_response_code(400);
         echo json_encode(["message" => "Product ID not provided."]);

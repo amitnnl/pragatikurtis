@@ -7,44 +7,44 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: 'hsl(var(--color-primary) / <alpha-value>)',
-        accent: 'hsl(var(--color-accent) / <alpha-value>)',
-        'accent-dark': 'hsl(30 70% 44% / <alpha-value>)',
-        'accent-light': 'hsl(30 80% 53% / 0.12)',
-        surface: 'hsl(var(--color-surface) / <alpha-value>)',
-        'surface-100': 'hsl(var(--color-surface) / 0.95 / <alpha-value>)',
-        'surface-200': 'hsl(var(--color-surface) / 0.9 / <alpha-value>)',
-        text: 'hsl(var(--color-text) / <alpha-value>)',
-        'text-800': 'hsl(var(--color-text) / 0.8 / <alpha-value>)',
-        'text-700': 'hsl(var(--color-text) / 0.7 / <alpha-value>)',
-        'text-500': 'hsl(var(--color-text) / 0.5 / <alpha-value>)',
-        muted: 'hsl(var(--color-muted) / <alpha-value>)',
-        'muted/10': 'hsl(var(--color-muted) / 0.1 / <alpha-value>)',
-        'muted/20': 'hsl(var(--color-muted) / 0.2 / <alpha-value>)',
-        'muted/30': 'hsl(var(--color-muted) / 0.3 / <alpha-value>)',
-        'muted/50': 'hsl(var(--color-muted) / 0.5 / <alpha-value>)',
-        'muted/70': 'hsl(var(--color-muted) / 0.7 / <alpha-value>)',
-
-        // New semantic colors
-        success: 'hsl(142, 70%, 40% / <alpha-value>)',
-        'success-soft': 'hsl(142, 70%, 90% / <alpha-value>)',
-        'success-light': 'hsl(142, 70%, 80% / <alpha-value>)',
-        danger: 'hsl(350, 70%, 50% / <alpha-value>)',
-        'danger-soft': 'hsl(350, 70%, 90% / <alpha-value>)',
-        'danger-light': 'hsl(350, 70%, 80% / <alpha-value>)',
-        warning: 'hsl(40, 90%, 50% / <alpha-value>)',
-        'warning-soft': 'hsl(40, 90%, 90% / <alpha-value>)',
-        'warning-light': 'hsl(40, 90%, 80% / <alpha-value>)',
-
-        // New colors for badges and other elements
-        info: 'hsl(200, 70%, 50% / <alpha-value>)',
-        'info-soft': 'hsl(200, 70%, 90% / <alpha-value>)',
-        purple: 'hsl(225, 73%, 57% / <alpha-value>)',
-        'purple-soft': 'hsl(225, 73%, 90% / <alpha-value>)',
+        // Royal Wine & Champagne Gold Luxury Ethnic Palette
+        primary: '#801B34',       // Deep Royal Wine / Mulberry
+        'primary-dark': '#631326',// Rich Burgundy
+        secondary: '#C5A059',     // Warm Champagne Gold
+        'secondary-light': '#E5C98E', // Pale Gold
+        cream: '#FAF7F2',         // Warm Ivory Silk Background
+        'soft-surface': '#F5EEE8',// Alabaster Silk Surface
+        'soft-mint': '#F5EEE8',   // Aliased for seamless component backward-compatibility
+        'text-dark': '#22181C',   // Deep Charcoal Rose
+        'text-muted': '#6F6467',  // Warm Mink Grey
+        'border-soft': '#E8DDD6', // Soft Warm Sand
+        success: '#1B7A58',       // Regal Emerald
+        'success-soft': '#EBF7F2',
+        sale: '#A62A45',          // Deep Crimson
+        
+        // Semantic colors & backward-compatibility aliases
+        accent: '#801B34',        // Deep Royal Wine
+        'accent-dark': '#631326',
+        'accent-light': '#F5EEE8',
+        surface: '#FAF7F2',       // Warm Ivory
+        'surface-50': '#FAF7F2',
+        'surface-100': '#F5EEE8', // Soft Alabaster
+        'surface-200': '#E8DDD6', // Soft Warm Sand
+        'surface-300': '#D4C5BC',
+        text: '#22181C',
+        'text-800': '#22181C',
+        'text-700': '#3E2E33',
+        'text-500': '#6F6467',
+        muted: '#6F6467',
+        danger: '#A62A45',
+        'danger-soft': '#FDF2F4',
+        warning: '#C5A059',
+        'warning-soft': '#FBF6EE',
+        info: '#3B6B88',
       },
       fontFamily: {
-        sans: ['var(--font-sans)', 'sans-serif'],
-        serif: ['var(--font-serif)', 'serif'],
+        sans: ['Inter', 'sans-serif'],
+        serif: ['Playfair Display', 'serif'],
       },
       borderRadius: {
         'lg': '0.625rem',
@@ -55,12 +55,14 @@ export default {
       },
       boxShadow: {
         'sm': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-        'DEFAULT': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-        'md': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-        'lg': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-        'xl': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
-        'soft': '0 4px 10px rgba(0,0,0,0.05)',
-        'card': '0 8px 20px rgba(0,0,0,0.1)',
+        'DEFAULT': '0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08)',
+        'md': '0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08)',
+        'lg': '0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08)',
+        'xl': '0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.08)',
+        'soft': '0 4px 12px rgba(128, 27, 52, 0.06)',
+        'card': '0 8px 24px rgba(34, 24, 28, 0.08)',
+        '3d': '0 20px 35px -10px rgba(128, 27, 52, 0.18), 0 10px 15px -5px rgba(197, 160, 89, 0.12)',
+        'gold-glow': '0 0 25px rgba(197, 160, 89, 0.35)',
       }
     },
   },

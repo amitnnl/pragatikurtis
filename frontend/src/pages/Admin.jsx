@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, Upload, Trash2, Edit, BarChart2, ShoppingBag, Settings, Star, ChevronDown, ChevronUp, Image as ImageIcon, Tag, DollarSign, Package, Eye, Menu, X, LogOut, Search, Filter, MessageSquare, ShoppingCart, Users, CheckCircle } from 'lucide-react'
+import { Plus, Upload, Trash2, Edit, BarChart2, ShoppingBag, Settings, Star, ChevronDown, ChevronUp, Image as ImageIcon, Tag, DollarSign, Package, Eye, Menu, X, LogOut, Home, Search, Filter, MessageSquare, ShoppingCart, Users, CheckCircle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BRAND_CONFIG } from '../config/branding.js'
 import AdminSettings from './AdminSettings'
@@ -803,7 +803,7 @@ function DashboardStats({ products, onEdit }) {
 
 // --- MAIN ADMIN LAYOUT ---
 
-export default function Admin({ products, refreshProducts }) {
+export default function Admin({ products, refreshProducts, setUser }) {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [isFormVisible, setFormVisible] = useState(false)
   const [productToEdit, setProductToEdit] = useState(null)
@@ -896,7 +896,12 @@ export default function Admin({ products, refreshProducts }) {
   ];
 
   const handleLogout = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('jwt');
     localStorage.removeItem('token');
+    if (setUser) {
+      setUser(null);
+    }
     window.location.href = '/login';
   };
 
@@ -930,10 +935,16 @@ export default function Admin({ products, refreshProducts }) {
           {navItems.map(item => <NavItem key={item.id} {...item} activeTab={activeTab} setActiveTab={setActiveTab} setSidebarOpen={setSidebarOpen} />)}
         </nav>
 
-        <div className="p-4 border-t border-white/8">
-          <Link to="/" className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-white/35 hover:text-white hover:bg-white/8 rounded-xl transition-all">
-            <LogOut size={16} /> Back to Store
+        <div className="p-4 border-t border-white/8 space-y-1.5">
+          <Link to="/" className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-white/50 hover:text-white hover:bg-white/8 rounded-xl transition-all">
+            <Home size={16} /> Back to Store
           </Link>
+          <button 
+            onClick={handleLogout} 
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-rose-300 hover:text-white hover:bg-rose-500/20 rounded-xl transition-all text-left cursor-pointer"
+          >
+            <LogOut size={16} /> Log Out
+          </button>
         </div>
       </motion.aside>
 
@@ -946,8 +957,13 @@ export default function Admin({ products, refreshProducts }) {
           <div className="flex items-center gap-3">
             <span className="text-xs text-muted/50 hidden sm:block">Admin Panel</span>
             <div className="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center font-bold text-sm shadow-md">A</div>
-            <button onClick={handleLogout} className="ml-2 p-2 text-danger hover:bg-danger-soft hover:text-red-700 rounded-full transition-colors" title="Log Out">
-              <LogOut size={18} />
+            <button 
+              onClick={handleLogout} 
+              className="ml-2 flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-danger hover:bg-danger-soft hover:text-red-700 rounded-lg transition-colors border border-danger/20 cursor-pointer" 
+              title="Log Out"
+            >
+              <LogOut size={15} />
+              <span className="hidden sm:inline">Log Out</span>
             </button>
           </div>
         </header>

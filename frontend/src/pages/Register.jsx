@@ -89,13 +89,13 @@ export default function Register({ setUser }) {
         </div>
         <button 
           disabled={loading}
-          className="w-full mt-2 py-3 bg-accent text-surface rounded-lg font-bold hover:bg-opacity-90 transition-all disabled:bg-surface-300"
+          className="w-full mt-4 py-3.5 bg-primary text-white rounded-xl font-semibold hover:bg-primary-dark transition-all disabled:opacity-50 btn-3d-press shadow-[0_12px_24px_rgba(128,27,52,0.35)] text-sm tracking-wider uppercase"
         >
           {loading ? 'Creating Account...' : 'Create Account'}
         </button>
-        <p className="text-center text-sm text-muted/70 pt-4">
+        <p className="text-center text-sm text-text-muted pt-4">
           Already have an account?{' '}
-          <Link to="/login" className="font-bold text-accent hover:underline">
+          <Link to="/login" className="font-bold text-primary hover:underline">
             Sign In
           </Link>
         </p>

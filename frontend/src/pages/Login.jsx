@@ -87,13 +87,13 @@ export default function Login({ setUser }) {
         </div>
 
         <button type="submit" disabled={loading}
-          className="w-full btn-primary justify-center disabled:opacity-60 disabled:translate-y-0 disabled:shadow-none mt-2">
+          className="w-full btn-primary justify-center disabled:opacity-60 disabled:translate-y-0 disabled:shadow-none mt-2 btn-3d-press shadow-[0_12px_24px_rgba(128,27,52,0.35)]">
           {loading ? 'Signing In…' : 'Sign In'}
         </button>
 
-        <p className="text-center text-sm text-muted/60 pt-2">
+        <p className="text-center text-sm text-text-muted pt-2">
           Don't have an account?{' '}
-          <Link to="/register" className="font-semibold text-accent hover:text-accent-dark transition-colors">
+          <Link to="/register" className="font-semibold text-primary hover:underline transition-colors">
             Sign up free
           </Link>
         </p>

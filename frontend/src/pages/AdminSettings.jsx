@@ -76,8 +76,16 @@ export default function AdminSettings() {
     home_philosophy_subtitle: '',
     home_philosophy_title: '',
     home_philosophy_text: '',
+    home_philosophy_image: '',
     newsletter_title: '',
     newsletter_subtitle: '',
+    home_editorial_subtitle: '',
+    home_editorial_title: '',
+    home_editorial_text: '',
+    home_editorial_link: '',
+    home_occasions_list: '',
+    home_instagram_title: '',
+    home_instagram_handle: '',
   });
   
   const [loading, setLoading] = useState(false);
@@ -203,6 +211,7 @@ export default function AdminSettings() {
 
   const tabs = [
     { id: 'general', label: 'General Info', icon: Layout },
+    { id: 'landing_ui', label: 'Landing UI', icon: Layout },
     { id: 'contact', label: 'Contact & Socials', icon: Phone },
     { id: 'pages', label: 'Static Pages', icon: FileText },
     { id: 'banners', label: 'Home Banners', icon: Image },
@@ -275,9 +284,24 @@ export default function AdminSettings() {
                 <SettingsSection title="Homepage 'Our Story' Section" icon={Layout}>
                   <FormField label="Small Subtitle (e.g. Our Philosophy)" name="home_philosophy_subtitle" value={settings.home_philosophy_subtitle} placeholder="Our Philosophy" onChange={handleChange} />
                   <FormField label="Main Bold Title" name="home_philosophy_title" value={settings.home_philosophy_title} placeholder="Elegance in Every Thread" onChange={handleChange} hint="Use HTML like <br /> for newlines or <em> for italics" />
+                  <FormField 
+                    label="Our Story Image URL or Path" 
+                    name="home_philosophy_image" 
+                    value={settings.home_philosophy_image || ''} 
+                    placeholder="/banners/Straight-Suit.jpeg" 
+                    onChange={handleChange} 
+                    hint="Enter image URL or local path (e.g., /banners/Straight-Suit.jpeg)"
+                  />
                   <FormField label="Description Text" name="home_philosophy_text" value={settings.home_philosophy_text} onChange={handleChange}>
                       <textarea name="home_philosophy_text" value={settings.home_philosophy_text || ''} placeholder="We believe in the timeless beauty..." onChange={handleChange} rows="3" className="w-full p-4 border border-surface-200 rounded-xl outline-none focus:ring-2 focus:ring-accent bg-surface transition-all text-text-700"></textarea>
                   </FormField>
+                </SettingsSection>
+                
+                <SettingsSection title="Homepage 'Follow Our Style' Section" icon={Layout}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField label="Section Title" name="home_instagram_title" value={settings.home_instagram_title || ''} placeholder="Follow Our Style" onChange={handleChange} />
+                    <FormField label="Instagram Handle" name="home_instagram_handle" value={settings.home_instagram_handle || ''} placeholder="@pragatikurtis" onChange={handleChange} />
+                  </div>
                 </SettingsSection>
 
                 <SettingsSection title="Newsletter Section" icon={AtSign}>
@@ -423,6 +447,25 @@ export default function AdminSettings() {
                        <strong>Note:</strong> Disabling these features instantly removes them for all public visitors. This puts complete power in your hands to toggle massive architectural features dynamically.
                      </p>
                   </div>
+                </SettingsSection>
+              </motion.div>
+            )}
+
+            {activeTab === 'landing_ui' && (
+              <motion.div key="landing_ui" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+                <SettingsSection title="Editorial Collection Banner" icon={Layout}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField label="Subtitle" name="home_editorial_subtitle" value={settings.home_editorial_subtitle} placeholder="Spring / Summer Collection" onChange={handleChange} />
+                    <FormField label="Main Title" name="home_editorial_title" value={settings.home_editorial_title} placeholder="Light. Beautiful. Effortless." onChange={handleChange} hint="Use <br/> for newlines"/>
+                  </div>
+                  <FormField label="Description Text" name="home_editorial_text" value={settings.home_editorial_text} placeholder="Discover breathable fabrics..." onChange={handleChange} />
+                  <FormField label="Button Link" name="home_editorial_link" value={settings.home_editorial_link} placeholder="/shop?collection=summer" onChange={handleChange} />
+                </SettingsSection>
+                
+                <SettingsSection title="Shop By Occasion (JSON config)" icon={Layout}>
+                  <FormField label="Occasions JSON Data" name="home_occasions_list" value={settings.home_occasions_list} onChange={handleChange} hint="Provide an array of objects with title, desc, img">
+                      <textarea name="home_occasions_list" value={settings.home_occasions_list || ''} onChange={handleChange} rows="6" className="w-full p-4 border border-surface-200 rounded-xl outline-none focus:ring-2 focus:ring-accent bg-surface font-mono text-sm text-text-700 leading-relaxed"></textarea>
+                  </FormField>
                 </SettingsSection>
               </motion.div>
             )}
